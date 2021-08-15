@@ -66,6 +66,7 @@
 
 <script>
 export default {
+  name: 'NewestItems',
   props: {
     initialItem: {
       type: Object,

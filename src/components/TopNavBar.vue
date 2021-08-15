@@ -9,7 +9,7 @@
         <v-btn text color="white"> 首頁 </v-btn>
       </router-link>
 
-      <router-link to="/products">
+      <router-link :to="{ name: 'products'}">
         <v-btn text color="white"> 商品列表 </v-btn>
       </router-link>
 
