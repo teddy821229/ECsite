@@ -35,7 +35,7 @@
           </v-sheet>
 
           <v-divider></v-divider>
-          <v-container class="product-container">
+          <v-container class="product-container px-3">
             <ProductsCard
               v-for="item in items"
               :key="item.id"
@@ -160,7 +160,9 @@ export default {
   display: none;
 }
 .product-container {
-  display: flex;
-  flex-flow: row wrap;
+  display: grid;
+  justify-items: center;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  grid-gap: 0 10px;
 }
 </style>

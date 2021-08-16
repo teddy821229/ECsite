@@ -6,7 +6,7 @@
           <v-img
             aspect-ratio="1.7778"
             src="https://picsum.photos/id/11/500/300"
-            class="mx-auto my-4"
+            class="mx-auto my-4 rounded-lg"
           ></v-img>
         </v-col>
 
