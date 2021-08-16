@@ -54,7 +54,7 @@
             </v-btn>
           </template>
 
-          <router-link to="/product" class="ml-3">
+          <router-link :to="{ name: 'product', params: { id: item.id }}" class="ml-3">
             <v-btn elevation="4" color="primary">現在購買</v-btn>
           </router-link>
         </v-card-actions>
