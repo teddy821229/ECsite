@@ -1,6 +1,6 @@
 <template>
   <div class="content-container">
-    <MainCarousel class="mt-10"/>
+    <MainCarousel class="mt-10" />
     <v-container>
       <div class="subtitle">最新商品</div>
 
@@ -57,6 +57,22 @@ const dummyProducts = [
   },
   {
     id: 4,
+    name: "幽靈熊愛與死亡",
+    price: 350,
+    description: "獨角獸家熱門IP第二彈，幽靈熊愛與死亡系列！",
+    isLiked: true,
+    inCart: false,
+  },
+  {
+    id: 5,
+    name: "幽靈熊愛與死亡",
+    price: 350,
+    description: "獨角獸家熱門IP第二彈，幽靈熊愛與死亡系列！",
+    isLiked: true,
+    inCart: false,
+  },
+  {
+    id: 6,
     name: "幽靈熊愛與死亡",
     price: 350,
     description: "獨角獸家熱門IP第二彈，幽靈熊愛與死亡系列！",
