@@ -39,7 +39,9 @@
             </div>
           </v-sheet>
           <v-sheet elevation="8"> 
-            <SettingForm />
+            <UserSettingForm 
+              v-if="selectedTag === 0"
+            />
             <!-- TODO: section content  -->
           </v-sheet>
         </v-col>
@@ -49,12 +51,12 @@
 </template>
 
 <script>
-import SettingForm from "./../components/SettingForm.vue";
+import UserSettingForm from "./../components/UserSettingForm.vue";
 
 export default {
   name: "Member",
   components: {
-    SettingForm,
+    UserSettingForm,
   },
   data: () => ({
     tags: [
@@ -65,11 +67,16 @@ export default {
       },
       {
         id: 2,
+        icon: 'mdi-lock',
+        name: '修改密碼'
+      },
+      {
+        id: 3,
         icon: "mdi-history",
         name: "歷史訂單",
       },
       {
-        id: 3,
+        id: 4,
         icon: "mdi-ticket-percent-outline",
         name: "優惠卷",
       },
