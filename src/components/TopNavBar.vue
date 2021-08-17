@@ -17,7 +17,7 @@
         <v-btn text color="white"> 我的收藏 </v-btn>
       </router-link>
 
-      <router-link to="/member">
+      <router-link to="/member/setting">
         <v-btn text color="white"> 會員中心 </v-btn>
       </router-link>
 

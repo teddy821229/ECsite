@@ -20,6 +20,7 @@
                   :key="tag.id"
                   class="align-center px-5"
                   two-line
+                  :to="{ name: tag.routeName }"
                 >
                   <v-list-item-icon class="mr-5 my-auto">
                     <v-icon>{{ tag.icon }}</v-icon>
@@ -39,9 +40,7 @@
             </div>
           </v-sheet>
           <v-sheet elevation="8"> 
-            <UserSettingForm 
-              v-if="selectedTag === 0"
-            />
+            <router-view />
             <!-- TODO: section content  -->
           </v-sheet>
         </v-col>
@@ -51,34 +50,35 @@
 </template>
 
 <script>
-import UserSettingForm from "./../components/UserSettingForm.vue";
+
 
 export default {
   name: "Member",
-  components: {
-    UserSettingForm,
-  },
   data: () => ({
     tags: [
       {
         id: 1,
         icon: "mdi-account",
         name: "個人資料設定",
+        routeName: 'setting'
       },
       {
         id: 2,
         icon: 'mdi-lock',
-        name: '修改密碼'
+        name: '修改密碼',
+        routeName: 'password'
       },
       {
         id: 3,
         icon: "mdi-history",
         name: "歷史訂單",
+        routeName: 'history'
       },
       {
         id: 4,
         icon: "mdi-ticket-percent-outline",
         name: "優惠卷",
+        routeName: 'coupon'
       },
     ],
     selectedTag: 0,
