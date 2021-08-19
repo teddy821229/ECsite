@@ -65,7 +65,7 @@
               <v-list-item
                 v-for="item in itemInCart"
                 :key="item.id"
-                class="d-flex align-center my-6"
+                class="d-flex align-center my-6 item-card"
               >
                 <v-img
                   :src="
@@ -141,7 +141,11 @@
               </span>
               <v-spacer></v-spacer>
               <v-btn text @click="menu = false"> 關閉 </v-btn>
-              <v-btn color="primary" text> 前往結帳 </v-btn>
+              <v-btn 
+                color="primary" 
+                text
+                to="/checkout"
+              > 前往結帳 </v-btn>
             </v-card-actions>
           </v-card>
         </v-menu>
@@ -251,7 +255,7 @@ a {
 </style>
 
 <style>
-input[type="number"] {
+.item-card input[type="number"] {
   text-align: center;
 }
 

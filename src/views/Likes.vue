@@ -2,7 +2,7 @@
   <v-container mb-5>  
     <v-sheet class="py-3 mx-auto" max-width="1440">
       <div
-        class="title text-center indigo white--text py-3 rounded-lg elevation-6"
+        class="title text-center indigo white--text py-3 elevation-6"
       >
         我的收藏
       </div>
