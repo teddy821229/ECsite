@@ -39,9 +39,8 @@
               {{sectionName}}
             </div>
           </v-sheet>
-          <v-sheet elevation="8"> 
+          <v-sheet elevation="8" class="mb-4"> 
             <router-view />
-            <!-- TODO: section content  -->
           </v-sheet>
         </v-col>
       </v-row>

@@ -1,13 +1,13 @@
 <template>
   <v-container>
     <v-sheet evelation="8">
-      <v-form ref="form" v-model="valid" @submit.prevent.stop="handleSubmit">
+      <v-form ref="form" @submit.prevent.stop="handleSubmit">
         <v-text-field
           v-model="presentPasswordCheck"
           required
           :rules="presentPasswordRule"
           label="舊密碼："
-          :append-icon="show.present ? 'mdi-eye-off' : 'mdi-eye'"
+          :append-icon="show.present ? 'mdi-eye' : 'mdi-eye-off'"
           :type="show.present  ? 'text' : 'password'"
           @click:append="show.present = !show.present "
         ></v-text-field>
@@ -18,7 +18,7 @@
           :rules="newPasswordRule"
           clearable
           required
-          :append-icon="show.new ? 'mdi-eye-off' : 'mdi-eye'"
+          :append-icon="show.new ? 'mdi-eye' : 'mdi-eye-off'"
           :type="show.new  ? 'text' : 'password'"
           @click:append="show.new = !show.new "
           hint="最少8個字，大小寫數字不限制"
@@ -30,14 +30,18 @@
           :rules="newPasswordRule"
           clearable
           required
-          :append-icon="show.newCheck ? 'mdi-eye-off' : 'mdi-eye'"
+          :append-icon="show.newCheck ? 'mdi-eye-off' : 'mdi-eye-off'"
           :type="show.newCheck  ? 'text' : 'password'"
           @click:append="show.newCheck = !show.newCheck "
         ></v-text-field>
 
         <v-row class="my-3">
           <v-spacer></v-spacer>
-          <v-btn :disabled="!valid" color="primary" class="mr-4" type="submit">
+          <v-btn 
+            :disabled="notEmpty"
+            color="primary" 
+            class="mr-4" 
+            type="submit">
             修改密碼
           </v-btn>
         </v-row>
@@ -47,12 +51,12 @@
 </template>
 
 <script>
-// import { Toast } from './../utils/helper'
+import { Toast } from './../utils/helper'
 
 export default {
   name: "ChangePasswordForm",
   data: () => ({
-    valid: true,
+    valid: false,
     check: false,
     presentPassword: "12345678",
     presentPasswordCheck: "",
@@ -75,6 +79,13 @@ export default {
     },
     handleSubmit() {
       this.toggleCheck();
+      if(!this.valid) {
+        Toast.fire({
+          icon: 'error',
+          title: '資料有誤，修改失敗'
+        })
+        return
+      }
     },
   },
   computed: {
@@ -96,6 +107,12 @@ export default {
         () => this.newPassword === this.newPasswordCheck || "新密碼不相同",
       ];
     },
+    notEmpty() {
+      if(this.presentPasswordCheck.trim() && this.newPassword.trim() && this.newPasswordCheck.trim()) {
+        return false
+      }
+      return true
+    }
   },
 };
 </script>

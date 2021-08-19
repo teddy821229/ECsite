@@ -73,8 +73,8 @@
 
         <v-row class="my-3">
           <v-spacer></v-spacer>
-          <v-btn color="primary" class="mr-4" outlined @click="cancelEdit"> 取消修改 </v-btn>
-          <v-btn :disabled="!valid" color="primary" class="mr-4">
+          <v-btn color="primary" class="mr-4" outlined @click="cancelEdit" :disabled="same"> 取消修改 </v-btn>
+          <v-btn :disabled="same || !valid" color="primary" class="mr-4">
             儲存修改
           </v-btn>
         </v-row>
@@ -123,6 +123,12 @@ export default {
       }
     }
   },
+  computed: {
+    same() {
+      let lists = ['username', 'sex', 'birthday', 'phone', 'email']
+      return lists.every(list => this.user[list] === this.userCached[list])
+    },
+  }
 };
 </script>
 

@@ -34,6 +34,7 @@ const routes = [
     path: '/member',
     name: 'member',
     component: () => import('./../views/Member.vue') ,
+    redirect: '/member/setting',
     children: [
       {
         path: 'setting',
@@ -48,12 +49,12 @@ const routes = [
       {
         path: 'history',
         name: 'history',
-        component: () => import('./../components/ChangePasswordForm.vue')
+        component: () => import('./../components/HistoryPurchase.vue')
       },
       {
         path: 'coupon',
         name: 'coupon',
-        component: () => import('./../components/ChangePasswordForm.vue')
+        component: () => import('./../components/Coupon.vue')
       }
     ]
   }

@@ -4,7 +4,7 @@
       <v-card class="mx-4 my-12 product-card" max-width="296">
         <v-img
           height="220"
-          src="https://cdn.vuetifyjs.com/images/cards/cooking.png"
+          :src="item.image || `https://picsum.photos/id/${10+item.id}/500/300`"
         ></v-img>
         <div class="card-section d-flex">
           <v-card-title class="text-title">{{ item.name }}</v-card-title>
