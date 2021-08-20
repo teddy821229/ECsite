@@ -150,7 +150,7 @@
       </router-link>
     </template>
     <template v-else>
-      <router-link to="/home">
+      <router-link to="/register">
         <v-btn text color="white"> 註冊 </v-btn>
       </router-link>
 
