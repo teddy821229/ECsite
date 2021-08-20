@@ -5,15 +5,15 @@
     </v-app-bar-title>
     <v-spacer></v-spacer>
 
+    <router-link to="/home">
+      <v-btn text color="white"> 首頁 </v-btn>
+    </router-link>
+
+    <router-link :to="{ name: 'products' }">
+      <v-btn text color="white"> 商品列表 </v-btn>
+    </router-link>
+
     <template v-if="isAuthenticated">
-      <router-link to="/home">
-        <v-btn text color="white"> 首頁 </v-btn>
-      </router-link>
-
-      <router-link :to="{ name: 'products' }">
-        <v-btn text color="white"> 商品列表 </v-btn>
-      </router-link>
-
       <router-link to="/likes">
         <v-btn text color="white"> 我的收藏 </v-btn>
       </router-link>
@@ -77,9 +77,7 @@
                 >
                 </v-img>
 
-                <v-sheet
-                  width="110px"
-                >
+                <v-sheet width="110px">
                   <div class="text-subtitle nowrap">
                     {{ item.Item.name }}
                   </div>
@@ -89,12 +87,10 @@
                   >
                 </v-sheet>
 
-                <v-sheet
-                  width="85px"
-                >
+                <v-sheet width="85px">
                   <v-text-field
                     hide-details
-                    class="text-subtitle pa-0 ma-0 "
+                    class="text-subtitle pa-0 ma-0"
                     v-model="item.quantity"
                     type="number"
                     @blur="checkQuantity(item.id)"
@@ -128,31 +124,25 @@
                 </v-sheet>
               </v-list-item>
             </v-list>
-            <v-sheet 
-              v-else
-              class="text-center grey--text py-16"
-            >
+            <v-sheet v-else class="text-center grey--text py-16">
               購物車是空的！快去找喜歡的商品吧！
             </v-sheet>
             <v-divider></v-divider>
 
             <v-card-actions>
-              <span>總金額：{{totalAmount}}
-              </span>
+              <span>總金額：{{ totalAmount }} </span>
               <v-spacer></v-spacer>
               <v-btn text @click="menu = false"> 關閉 </v-btn>
-              <v-btn 
-                color="primary" 
-                text
-                to="/checkout"
-              > 前往結帳 </v-btn>
+              <v-btn color="primary" text to="/checkout"> 前往結帳 </v-btn>
             </v-card-actions>
           </v-card>
         </v-menu>
       </div>
+    </template>
 
-      <!-- 登出/登入 功能 -->
+    <!-- 登出/登入 功能 -->
 
+    <template v-if="isAuthenticated">
       <router-link to="#">
         <v-btn class="mx-2" icon color="white">
           <v-icon>mdi-logout</v-icon>
@@ -164,7 +154,7 @@
         <v-btn text color="white"> 註冊 </v-btn>
       </router-link>
 
-      <router-link to="/home">
+      <router-link to="/login">
         <v-btn text color="white"> 登入 </v-btn>
       </router-link>
     </template>
@@ -218,7 +208,7 @@ export default {
     minusQuantity(id) {
       let target = this.itemInCart.find((item) => item.id === id);
       if (target.quantity === 1) {
-        this.itemInCart = this.itemInCart.filter(item => item.id !== id)
+        this.itemInCart = this.itemInCart.filter((item) => item.id !== id);
         return;
       }
       target.quantity -= 1;
@@ -232,11 +222,13 @@ export default {
   },
   computed: {
     totalAmount() {
-      let price = 0
-      this.itemInCart.forEach(item => price += item.Item.price * item.quantity)
-      return price
-    }
-  }
+      let price = 0;
+      this.itemInCart.forEach(
+        (item) => (price += item.Item.price * item.quantity)
+      );
+      return price;
+    },
+  },
 };
 </script>
 
