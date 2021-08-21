@@ -1,7 +1,7 @@
 <template>
   <v-hover>
     <v-slide-item>
-      <v-card class="mx-4 my-12 product-card" max-width="296">
+      <v-card class="mx-4 my-2 product-card" max-width="296">
         <v-img
           height="220"
           :src="item.image || `https://picsum.photos/id/${10+item.id}/500/300`"

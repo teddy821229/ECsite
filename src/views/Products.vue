@@ -1,11 +1,17 @@
 <template>
   <v-container>
-    <v-sheet class="mx-auto px-3 my-5" elevation="12" max-width="1440" rounded>
+    <v-sheet class="mx-auto px-3 my-5" elevation="12" max-width="1200" rounded>
       <v-row>
-        <ProductsCategoryList />
+        <ProductsCategoryList
+          :filterId="selectFilter"
+          :searchInput="searchInput"
+          @after-change-category="afterChangeCategory"
+        />
         <v-divider vertical></v-divider>
         <v-col cols="9">
-          <SearchingBar />
+          <SearchingBar 
+            @after-search="afterSearch"
+          />
           <v-divider></v-divider>
 
           <v-sheet
@@ -23,6 +29,15 @@
                 rounded
                 exact-active-class="indigo white--text"
                 exact
+                @click="selectFilter = tag.id"
+                :to="{
+                  name: 'products',
+                  query: {
+                    filterId: tag.id,
+                    seriesId: selectSeries,
+                    keyword: searchInput
+                  },
+                }"
               >
                 {{ tag.name }}
               </v-btn>
@@ -118,11 +133,24 @@ export default {
         name: "價格",
       },
     ],
+    selectFilter: 1,
+    selectSeries: "all",
     sort: "ascending",
+    searchInput: '',
     items: [],
   }),
   created() {
     this.fetchProducts();
+    const { filterId = "", seriesId = "" } = this.$route.query;
+    this.selectSeries = seriesId;
+    this.selectFilter = Number(filterId);
+  },
+  beforeRouteUpdate(to, from, next) {
+    const { filterId = "", seriesId = ""} = to.query;
+    this.selectSeries = seriesId;
+    this.selectFilter = Number(filterId);
+    document.documentElement.scrollTop = 0;
+    next();
   },
   methods: {
     fetchProducts() {
@@ -140,6 +168,15 @@ export default {
         return;
       }
     },
+    afterChangeCategory(id) {
+      this.selectSeries = id;
+      this.searchInput = ''
+    },
+    afterSearch(keyword) {
+      this.selectSeries = 'all'
+      this.selectFilter = 1
+      this.searchInput = keyword
+    }
   },
 };
 </script>

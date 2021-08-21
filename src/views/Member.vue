@@ -1,6 +1,6 @@
 <template>
   <v-container>
-    <v-sheet max-width="1440px" class="mx-auto">
+    <v-sheet max-width="1200px" class="mx-auto">
       <v-row>
         <v-col cols="3">
           <v-sheet elevation="8" class="my-3">

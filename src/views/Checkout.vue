@@ -2,12 +2,13 @@
   <v-container>
     <v-sheet
       elevation="8"
-      class="text-h5 font-weight-bold text-center py-3 indigo white--text my-3"
+      class="text-h5 font-weight-bold text-center py-3 indigo white--text my-3 mx-auto"
+      max-width="1200"
     >
       結帳
     </v-sheet>
 
-    <v-sheet>
+    <v-sheet max-width="1200" class="mx-auto"> 
       <v-stepper v-model="nowStep">
         <v-stepper-header>
           <v-stepper-step :complete="nowStep > 1" step="1">

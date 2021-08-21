@@ -2,12 +2,13 @@
   <v-container class="pb-8">
     <v-sheet
       elevation="8"
-      class="text-h5 font-weight-bold text-center py-3 indigo white--text my-3"
+      class="text-h5 font-weight-bold text-center py-3 indigo white--text my-3 mx-auto"
+      max-width="1200"
     >
       會員註冊
     </v-sheet>
 
-    <v-sheet elevation="8" class="py-8">
+    <v-sheet elevation="8" class="py-8 mx-auto" max-width="1200">
       <v-sheet max-width="600px" class="mx-auto">
         <v-form
           class="px-10 py-6"

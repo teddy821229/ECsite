@@ -1,6 +1,6 @@
 <template>
   <v-container mb-5>  
-    <v-sheet class="py-3 mx-auto" max-width="1440">
+    <v-sheet class="py-3 mx-auto" max-width="1200">
       <div
         class="title text-center indigo white--text py-3 elevation-6"
       >
@@ -8,11 +8,11 @@
       </div>
     </v-sheet>
 
-    <v-sheet class="my-3 mx-auto" elevation="4" max-width="1440">
+    <v-sheet class="my-3 mx-auto" elevation="4" max-width="1200">
       <SearchingBar />
     </v-sheet>
 
-    <v-sheet elevation="8" class="mt-5 mx-auto" max-width="1440">
+    <v-sheet elevation="8" class="mt-5 mx-auto" max-width="1200">
       <v-container class="card-container px-10">
         <ProductsCard
           v-for="product in items"

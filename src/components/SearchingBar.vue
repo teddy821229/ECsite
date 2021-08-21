@@ -10,7 +10,13 @@
             outlined
             hide-details
           ></v-text-field>
-          <v-btn class="mr-4 search-button" type="submit" text height="56px"> 搜尋 </v-btn>
+          <v-btn 
+            class="mr-4 search-button" 
+            type="submit" 
+            text 
+            height="56px"
+            @click="searchResult"
+          > 搜尋 </v-btn>
         </v-col>
       </v-row>
     </v-container>
@@ -23,6 +29,20 @@ export default {
   data: () => ({
     keyword: "",
   }),
+  methods: {
+    searchResult() {
+      document.documentElement.scrollTop = 0
+      this.$router.push({
+        name: 'products',
+        query: {
+          filterId: 1,
+          seriesId: 'all',
+          keyword: this.keyword
+        }
+      })
+      this.$emit('after-search', this.keyword)
+    }
+  }
 };
 </script>
 

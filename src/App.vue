@@ -20,7 +20,7 @@ export default {
     Footer
   },
   data: () => ({
-    isAuthenticated: false,
+    isAuthenticated: true,
   }),
 };
 </script>

@@ -9,7 +9,16 @@
       <v-btn text color="white"> 首頁 </v-btn>
     </router-link>
 
-    <router-link :to="{ name: 'products' }">
+    <router-link
+      :to="{
+        name: 'products',
+        query: {
+          filterId: 1,
+          seriesId: 'all',
+          keyword: ''
+        },
+      }"
+    >
       <v-btn text color="white"> 商品列表 </v-btn>
     </router-link>
 
@@ -133,7 +142,7 @@
               <span>總金額：{{ totalAmount }} </span>
               <v-spacer></v-spacer>
               <v-btn text @click="menu = false"> 關閉 </v-btn>
-              <v-btn color="primary" text to="/checkout"> 前往結帳 </v-btn>
+              <v-btn color="primary" text @click="toCheckout"> 前往結帳 </v-btn>
             </v-card-actions>
           </v-card>
         </v-menu>
@@ -218,6 +227,10 @@ export default {
       if (target.quantity > target.Item.stock) {
         target.quantity = target.Item.stock;
       }
+    },
+    toCheckout() {
+      this.$router.push("/checkout");
+      this.menu = false;
     },
   },
   computed: {
