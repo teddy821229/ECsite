@@ -221,7 +221,16 @@
               </v-card-title>
               <div class="actions d-flex">
                 <v-spacer></v-spacer>
-                <v-btn color="indigo" text class="mr-3" to="/products">
+                <v-btn color="indigo" text class="mr-3" 
+                  :to="{
+                    name: 'products',
+                    query: {
+                      filterId: 1,
+                      seriesId: 'all',
+                      keyword: ''
+                    }
+                  }"
+                >
                   繼續購物
                 </v-btn>
                 <v-btn color="indigo white--text" to="/member/history">

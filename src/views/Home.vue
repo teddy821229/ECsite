@@ -267,6 +267,7 @@ export default {
         query: {
           filterId: 1,
           seriesId: this.selectCategory,
+          keyword: ''
         }
       })
     }

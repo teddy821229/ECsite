@@ -11,6 +11,8 @@
 </template>
 
 <script>
+import { mapState } from 'vuex'
+
 import TopNavBar from './components/TopNavBar.vue'
 import Footer from './components/Footer.vue'
 export default {
@@ -19,9 +21,9 @@ export default {
     TopNavBar,
     Footer
   },
-  data: () => ({
-    isAuthenticated: true,
-  }),
+  computed: {
+    ...mapState(['user', 'isAuthenticated'])
+  }
 };
 </script>
 

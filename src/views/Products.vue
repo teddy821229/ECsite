@@ -9,9 +9,7 @@
         />
         <v-divider vertical></v-divider>
         <v-col cols="9">
-          <SearchingBar 
-            @after-search="afterSearch"
-          />
+          <SearchingBar target="products" @after-search="afterSearch" />
           <v-divider></v-divider>
 
           <v-sheet
@@ -35,7 +33,7 @@
                   query: {
                     filterId: tag.id,
                     seriesId: selectSeries,
-                    keyword: searchInput
+                    keyword: searchInput,
                   },
                 }"
               >
@@ -136,7 +134,7 @@ export default {
     selectFilter: 1,
     selectSeries: "all",
     sort: "ascending",
-    searchInput: '',
+    searchInput: "",
     items: [],
   }),
   created() {
@@ -146,7 +144,7 @@ export default {
     this.selectFilter = Number(filterId);
   },
   beforeRouteUpdate(to, from, next) {
-    const { filterId = "", seriesId = ""} = to.query;
+    const { filterId = "", seriesId = "" } = to.query;
     this.selectSeries = seriesId;
     this.selectFilter = Number(filterId);
     document.documentElement.scrollTop = 0;
@@ -170,13 +168,13 @@ export default {
     },
     afterChangeCategory(id) {
       this.selectSeries = id;
-      this.searchInput = ''
+      this.searchInput = "";
     },
     afterSearch(keyword) {
-      this.selectSeries = 'all'
-      this.selectFilter = 1
-      this.searchInput = keyword
-    }
+      this.selectSeries = "all";
+      this.selectFilter = 1;
+      this.searchInput = keyword;
+    },
   },
 };
 </script>

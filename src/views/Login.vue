@@ -9,7 +9,7 @@
     </v-sheet>
     <v-sheet elevation="8" class="py-8 mx-auto" max-width="1200">
       <v-sheet max-width="600px" class="mx-auto">
-        <v-form class="px-10 py-6" v-model="valid">
+        <v-form class="px-10 py-6" v-model="valid" @submit.prevent.stop="handleLogin">
           <v-text-field
             v-model="account"
             label="帳號"
@@ -51,6 +51,15 @@
 </template>
 
 <script>
+import { Toast } from './../utils/helper'
+
+const dummyUser = {
+  id: 666,
+  name: 'Teddy',
+  account: 'teddy0323',
+  password: '12345678'
+}
+
 export default {
   name: "Login",
   data: () => ({
@@ -60,6 +69,31 @@ export default {
     passwordShow: false,
     notEmpty: [(v) => !!v || "請填寫欄位"],
   }),
+  methods: {
+    handleLogin() {
+      if(this.account !== dummyUser.account || this.password !== dummyUser.password) {
+        Toast.fire({
+          icon: 'error',
+          title: '帳號或密碼錯誤。'
+        })
+        return
+      }
+      Toast.fire({
+        icon: 'success',
+        title: '登入成功'
+      })
+
+      const userData = {
+        id: dummyUser.id,
+        name: dummyUser.name,
+        account: dummyUser.account
+      }
+
+      localStorage.setItem('currentUser', JSON.stringify(userData))
+      this.$store.commit('setCurrentUser', userData)
+      this.$router.push('/home')
+    }
+  }
 };
 </script>
 

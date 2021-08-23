@@ -1,6 +1,7 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
 import Home from './../views/Home.vue'
+import store from './../store'
 
 Vue.use(VueRouter)
 
@@ -28,7 +29,23 @@ const routes = [
   {
     path: '/products',
     name: 'products',
-    component: () => import('./../views/Products.vue')
+    component: () => import('./../views/Products.vue'),
+    beforeEnter: (to, from, next) => {
+      // 重新整理後，重置所有已經選擇的篩選器
+      if(!from.name && (to.query.filterId !== '1' || to.query.seriesId !== 'all' || to.query.keyword !== '')) {
+        next({
+          name: 'products',
+          query: {
+            filterId: '1',
+            seriesId: 'all',
+            keyword: ''
+          }
+        })
+      }
+
+
+      next()
+    }
   },
   {
     path: '/product/:id',
@@ -43,7 +60,7 @@ const routes = [
   {
     path: '/member',
     name: 'member',
-    component: () => import('./../views/Member.vue') ,
+    component: () => import('./../views/Member.vue'),
     redirect: '/member/setting',
     children: [
       {
@@ -77,6 +94,19 @@ const routes = [
 
 const router = new VueRouter({
   routes
+})
+
+router.beforeEach((to, from, next) => {
+  const currentUser = JSON.parse(localStorage.getItem('currentUser'))
+  const itemInCart = JSON.parse(localStorage.getItem('itemInCart'))
+  if(currentUser) {
+    store.commit('setCurrentUser', currentUser)
+  }
+  if(itemInCart) {
+    store.commit('getCartItem', itemInCart)
+  }
+
+  next()
 })
 
 export default router

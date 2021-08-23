@@ -10,13 +10,15 @@
             outlined
             hide-details
           ></v-text-field>
-          <v-btn 
-            class="mr-4 search-button" 
-            type="submit" 
-            text 
+          <v-btn
+            class="mr-4 search-button"
+            type="submit"
+            text
             height="56px"
             @click="searchResult"
-          > 搜尋 </v-btn>
+          >
+            搜尋
+          </v-btn>
         </v-col>
       </v-row>
     </v-container>
@@ -26,27 +28,41 @@
 <script>
 export default {
   name: "SearchingBar",
+  props: {
+    target: {
+      type: String,
+      required: true,
+    },
+  },
   data: () => ({
     keyword: "",
   }),
   methods: {
     searchResult() {
-      document.documentElement.scrollTop = 0
+      document.documentElement.scrollTop = 0;
+      if (this.target === "likes") {
+        this.$router.push({
+          name: this.target,
+          query: {
+            keyword: this.keyword,
+          },
+        });
+        return
+      }
       this.$router.push({
-        name: 'products',
+        name: this.target,
         query: {
           filterId: 1,
-          seriesId: 'all',
-          keyword: this.keyword
-        }
-      })
-      this.$emit('after-search', this.keyword)
-    }
-  }
+          seriesId: "all",
+          keyword: this.keyword,
+        },
+      });
+      this.$emit("after-search", this.keyword);
+    },
+  },
 };
 </script>
 
 
 <style scoped>
-
 </style>

@@ -9,7 +9,9 @@
     </v-sheet>
 
     <v-sheet class="my-3 mx-auto" elevation="4" max-width="1200">
-      <SearchingBar />
+      <SearchingBar 
+        target="likes"
+      />
     </v-sheet>
 
     <v-sheet elevation="8" class="mt-5 mx-auto" max-width="1200">

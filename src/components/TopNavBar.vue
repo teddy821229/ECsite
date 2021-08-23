@@ -152,19 +152,28 @@
     <!-- 登出/登入 功能 -->
 
     <template v-if="isAuthenticated">
-      <router-link to="#">
-        <v-btn class="mx-2" icon color="white">
+        <v-btn 
+          class="mx-2" 
+          icon 
+          color="white"
+          @click="handleLogout"
+        >
           <v-icon>mdi-logout</v-icon>
         </v-btn>
-      </router-link>
     </template>
+
+
     <template v-else>
       <router-link to="/register">
         <v-btn text color="white"> 註冊 </v-btn>
       </router-link>
 
       <router-link to="/login">
-        <v-btn text color="white"> 登入 </v-btn>
+        <v-btn 
+          text 
+          color="white"
+          to="/login"
+        > 登入 </v-btn>
       </router-link>
     </template>
   </v-app-bar>
@@ -232,6 +241,10 @@ export default {
       this.$router.push("/checkout");
       this.menu = false;
     },
+    handleLogout() {
+      // TODO: toast submit
+      this.$store.commit('revokeAuthentication')
+    }
   },
   computed: {
     totalAmount() {
