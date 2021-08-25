@@ -50,7 +50,7 @@
           <v-divider></v-divider>
           <v-container class="product-container px-3">
             <ProductsCard
-              v-for="item in items"
+              v-for="item in filterProducts"
               :key="item.id"
               :initial-item="item"
             />
@@ -72,30 +72,30 @@ const dummyProducts = [
   {
     id: 1,
     name: "bob色彩系列",
+    series: 'unicorn1',
     price: 550,
     description: "bob系列第三代，色彩系列！",
-    isLiked: false,
   },
   {
     id: 2,
     name: "Yuki進化論",
+    series: 'popmart4',
     price: 280,
     description: "yuki第四彈，進化論系列！",
-    isLiked: false,
   },
   {
     id: 3,
     name: "Dimoo夏日",
+    series: 'popmart1',
     price: 350,
     description: "Dimoo再出新品，夏日系列！",
-    isLiked: false,
   },
   {
     id: 4,
     name: "幽靈熊愛與死亡",
+    series: 'unicorn4',
     price: 350,
     description: "獨角獸家熱門IP第二彈，幽靈熊愛與死亡系列！",
-    isLiked: false,
   },
 ];
 
@@ -129,6 +129,7 @@ export default {
         name: "價格",
       },
     ],
+    items: [],
     selectFilter: 1,
     selectSeries: "all",
     sort: "ascending",
@@ -175,6 +176,17 @@ export default {
   },
   computed: {
     ...mapState(["user"]),
+    filterProducts() {
+      let afterFilterList = this.items
+      if(this.selectSeries !== 'all') 
+
+      afterFilterList =  afterFilterList.filter(item => item.series.includes(this.selectSeries))
+
+      // afterFilter
+
+      return afterFilterList
+
+    }
   },
 };
 </script>

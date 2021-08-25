@@ -96,6 +96,10 @@ const dummyCategories = [
         id: "unicorn3",
         title: "Rico",
       },
+      {
+        id: 'unicorn4',
+        title: '幽靈熊'
+      },
     ],
   },
   {
