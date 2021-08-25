@@ -15,7 +15,6 @@
       </v-btn>
     </v-form>
     <v-divider class="mt-2"></v-divider>
-    <br />
     <v-container class="card-container">
       <CouponTicket v-for="ticket in tickets" :key="ticket.id" :ticket="ticket" />
     </v-container>

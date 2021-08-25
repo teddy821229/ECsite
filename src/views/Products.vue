@@ -66,14 +66,15 @@ import ProductsCategoryList from "./../components/ProductsCategoryList.vue";
 import SearchingBar from "./../components/SearchingBar.vue";
 import ProductsCard from "./../components/ProductsCard.vue";
 
+import { mapState } from "vuex";
+
 const dummyProducts = [
   {
     id: 1,
     name: "bob色彩系列",
     price: 550,
     description: "bob系列第三代，色彩系列！",
-    isLiked: true,
-    inCart: false,
+    isLiked: false,
   },
   {
     id: 2,
@@ -81,23 +82,20 @@ const dummyProducts = [
     price: 280,
     description: "yuki第四彈，進化論系列！",
     isLiked: false,
-    inCart: true,
   },
   {
     id: 3,
     name: "Dimoo夏日",
     price: 350,
     description: "Dimoo再出新品，夏日系列！",
-    isLiked: true,
-    inCart: true,
+    isLiked: false,
   },
   {
     id: 4,
     name: "幽靈熊愛與死亡",
     price: 350,
     description: "獨角獸家熱門IP第二彈，幽靈熊愛與死亡系列！",
-    isLiked: true,
-    inCart: false,
+    isLiked: false,
   },
 ];
 
@@ -135,7 +133,6 @@ export default {
     selectSeries: "all",
     sort: "ascending",
     searchInput: "",
-    items: [],
   }),
   created() {
     this.fetchProducts();
@@ -175,6 +172,9 @@ export default {
       this.selectFilter = 1;
       this.searchInput = keyword;
     },
+  },
+  computed: {
+    ...mapState(["user"]),
   },
 };
 </script>

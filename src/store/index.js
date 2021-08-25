@@ -11,7 +11,8 @@ export default new Vuex.Store({
       account: '',
     },
     isAuthenticated: false,
-    itemInCart: []
+    itemInCart: [],
+    likes: []
   },
   mutations: {
     // user control
@@ -23,23 +24,56 @@ export default new Vuex.Store({
       state.isAuthenticated = true
     },
     revokeAuthentication(state) {
-      state.user = {}
+      state.user = {
+        id: -1,
+        name: '',
+        account: '',
+      }
       state.isAuthenticated = false
       localStorage.removeItem('currentUser')
+
+      state.itemInCart = []
+      localStorage.removeItem('cartItems')
+
+      state.likes = []
+      localStorage.removeItem('likes')
     },
     // cart control
     getCartItem(state, items) {
       state.itemInCart = items
     },
     setCartItem(state, item) {
-      // TODO: 確認是否存在，決定是要推進去還是加數量
-      state.itemInCart.push(item)
+      // TODO: use some or find ?
+
+      if (!state.itemInCart.find(cartItem => cartItem.Item.id === item.Item.id)) {
+        state.itemInCart.push(item)
+      } else {
+        const target = state.itemInCart.find(cartItem => cartItem.Item.id === item.Item.id)
+        target.quantity = item.quantity
+      }
+
       localStorage.setItem('cartItems', JSON.stringify(state.itemInCart))
     },
-    removeCartItem(state, targetId) {
-      // TODO: 確認是否存在，決定是要刪除還是減少數量
-      state.itemInCart = state.itemInCart.filter(item => item.id !== targetId)
+    removeCartItem(state, targetItem) {
+      state.itemInCart = state.itemInCart.filter(item => item.Item.id !== targetItem.Item.id)
       localStorage.setItem('cartItems', JSON.stringify(state.itemInCart))
+    },
+    cleanCartItem(state) {
+      state.itemInCart = []
+      localStorage.removeItem('cartItems')
+    },
+    // likes control 
+    // TODO: likes should be saved in DB, need to adjust
+    getLikes(state, data) {
+      state.likes = data
+    },
+    setLike(state, target) {
+      state.likes.push(target)
+      localStorage.setItem('likes', JSON.stringify(state.likes))
+    },
+    removeLike(state, target) {
+      state.likes = state.likes.filter(like => like.id !== target.id)
+      localStorage.setItem('likes', JSON.stringify(state.likes))
     }
   },
   actions: {

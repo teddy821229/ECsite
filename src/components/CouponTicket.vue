@@ -1,9 +1,10 @@
 <template>
   <v-hover v-slot="{ hover }">
-    <v-card 
+    <v-card
       class="card my-2 d-flex align-center"
-      :elevation="hover ? 8 : 4 "
-      :class="{moveY: hover}"
+      :elevation="hover ? 8 : 4"
+      :class="{ moveY: hover }"
+      :min-width="minWidth"
     >
       <v-container class="icon-container py-7 ma-0 indigo">
         <v-icon x-large color="white"> mdi-ticket-percent-outline </v-icon>
@@ -27,6 +28,10 @@ export default {
       type: Object,
       default: () => ({}),
     },
+    minWidth: {
+      type: String,
+      default: ''
+    }
   },
   name: "CouponTicket",
 };

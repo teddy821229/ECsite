@@ -50,16 +50,18 @@
                   flex-column
                   rounded-circle
                 "
-                :color=" hover ? 'indigo' : 'white'"
+                :color="hover ? 'indigo' : 'white'"
                 :elevation="hover ? 8 : 4"
                 @click.prevent.stop="toPage"
               >
-                <v-icon 
-                  :color=" hover ? 'white' : 'indigo'"
-                > mdi-plus-circle-outline </v-icon>
-                <span class="text-h6"
+                <v-icon :color="hover ? 'white' : 'indigo'">
+                  mdi-plus-circle-outline
+                </v-icon>
+                <span
+                  class="text-h6"
                   :class="hover ? 'white--text' : 'indigo--text'"
-                >看更多</span>
+                  >看更多</span
+                >
               </v-sheet>
             </v-hover>
           </v-card>
@@ -72,55 +74,44 @@
 <script>
 import MainCarousel from "./../components/MainCarousel";
 import NewestItems from "./../components/NewestItems.vue";
+import { mapState } from "vuex";
 
 const dummyNuwest = [
   {
     id: 1,
     name: "bob色彩系列",
-    price: 550,
+    price: 55000,
     description: "bob系列第三代，色彩系列！",
-    isLiked: true,
-    inCart: false,
   },
   {
     id: 2,
     name: "Yuki進化論",
     price: 280,
     description: "yuki第四彈，進化論系列！",
-    isLiked: false,
-    inCart: true,
   },
   {
     id: 3,
     name: "Dimoo夏日",
     price: 350,
     description: "Dimoo再出新品，夏日系列！",
-    isLiked: true,
-    inCart: true,
   },
   {
     id: 4,
     name: "幽靈熊愛與死亡",
     price: 350,
     description: "獨角獸家熱門IP第二彈，幽靈熊愛與死亡系列！",
-    isLiked: true,
-    inCart: false,
   },
   {
     id: 5,
     name: "幽靈熊愛與死亡",
     price: 350,
     description: "獨角獸家熱門IP第二彈，幽靈熊愛與死亡系列！",
-    isLiked: true,
-    inCart: false,
   },
   {
     id: 6,
     name: "幽靈熊愛與死亡",
     price: 350,
     description: "獨角獸家熱門IP第二彈，幽靈熊愛與死亡系列！",
-    isLiked: true,
-    inCart: false,
   },
 ];
 
@@ -128,106 +119,86 @@ const dummyTopFiveItem = [
   {
     id: 1,
     name: "bob色彩系列",
-    price: 550,
+    price: 500,
     description: "bob系列第三代，色彩系列！",
-    categoryId: 'popmart',
-    isLiked: true,
-    inCart: false,
+    categoryId: "popmart",
   },
   {
     id: 2,
     name: "bob環遊系列",
     price: 550,
     description: "bob系列第三代，色彩系列！",
-    categoryId: 'popmart',
-    isLiked: true,
-    inCart: false,
+    categoryId: "popmart",
   },
   {
     id: 3,
     name: "Rico海島",
     price: 550,
     description: "我是獨角獸系列",
-    categoryId: 'popmart',
-    isLiked: true,
-    inCart: false,
+    categoryId: "popmart",
   },
   {
     id: 4,
     name: "幽靈熊旅館",
     price: 550,
     description: "幽靈熊最新第三代，跟前幾代長很像。",
-    categoryId: 'popmart',
-    isLiked: true,
-    inCart: false,
+    categoryId: "popmart",
   },
   {
     id: 5,
     name: "幽靈熊愛與死亡",
     price: 550,
     description: "幽靈熊最新第二代",
-    categoryId: 'popmart',
-    isLiked: true,
-    inCart: false,
+    categoryId: "popmart",
   },
   {
     id: 6,
     name: "小甜豆秋葉原",
     price: 550,
     description: "小甜豆秋葉原",
-    categoryId: 'unicorn',
-    isLiked: true,
-    inCart: false,
+    categoryId: "unicorn",
   },
   {
     id: 7,
     name: "Dimoo動物",
     price: 550,
     description: "Dimoo動物",
-    categoryId: 'unicorn',
-    isLiked: true,
-    inCart: false,
+    categoryId: "unicorn",
   },
   {
     id: 8,
     name: "豬女",
     price: 550,
     description: "豬女",
-    categoryId: 'unicorn',
-    isLiked: true,
-    inCart: false,
+    categoryId: "unicorn",
   },
   {
     id: 9,
     name: "眼淚",
     price: 550,
     description: "眼淚",
-    categoryId: 'unicorn',
-    isLiked: true,
-    inCart: false,
+    categoryId: "unicorn",
   },
   {
     id: 10,
     name: "yuki進化論",
     price: 550,
     description: "yuki進化論",
-    categoryId: 'unicorn',
-    isLiked: true,
-    inCart: false,
+    categoryId: "unicorn",
   },
 ];
 
 const dummySeries = [
   {
-    id: 'popmart',
+    id: "popmart",
     name: "泡泡瑪特",
   },
   {
-    id: 'unicorn',
+    id: "unicorn",
     name: "尋找獨角獸",
   },
   {
-    id: '52toys',
+    id: "52toys",
     name: "52TOYS",
   },
   {
@@ -250,7 +221,7 @@ export default {
     newestItems: [],
     topFiveItems: [],
     series: [],
-    selectCategory: 'popmart',
+    selectCategory: "popmart",
   }),
   methods: {
     fetchProducts() {
@@ -261,16 +232,16 @@ export default {
       this.series = dummySeries;
     },
     toPage() {
-      document.documentElement.scrollTop = 0
+      document.documentElement.scrollTop = 0;
       this.$router.push({
-        name: 'products',
+        name: "products",
         query: {
           filterId: 1,
           seriesId: this.selectCategory,
-          keyword: ''
-        }
-      })
-    }
+          keyword: "",
+        },
+      });
+    },
   },
   computed: {
     filteredTopFive() {
@@ -278,6 +249,7 @@ export default {
         (item) => item.categoryId === this.selectCategory
       );
     },
+    ...mapState(["user"]),
   },
 };
 </script>
@@ -323,5 +295,4 @@ export default {
   height: 100px;
   cursor: pointer;
 }
-
 </style>

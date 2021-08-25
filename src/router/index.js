@@ -2,8 +2,33 @@ import Vue from 'vue'
 import VueRouter from 'vue-router'
 import Home from './../views/Home.vue'
 import store from './../store'
+import { Toast } from './../utils/helper'
 
 Vue.use(VueRouter)
+
+const authorizationCheck = (to, from ,next) => {
+  const currentUser = store.state.user
+  if(currentUser.id !== -1) {
+    Toast.fire({
+      icon: 'error',
+      title: '目前無法前往該頁面，請先登出。'
+    })
+    next('/home')
+  }
+  next()
+}
+
+const unAuthorization = (to, from ,next) => {
+  const currentUser = store.state.user
+  if(currentUser.id === -1) {
+    Toast.fire({
+      icon: 'error',
+      title: '請先登入'
+    })
+    next('/home')
+  }
+  next()
+}
 
 const routes = [
   {
@@ -19,12 +44,14 @@ const routes = [
   {
     path: '/login',
     name: 'login',
-    component: () => import('./../views/Login.vue')
+    component: () => import('./../views/Login.vue'),
+    beforeEnter: authorizationCheck
   },
   {
     path: '/register',
     name: 'register',
-    component: () => import('./../views/Register.vue')
+    component: () => import('./../views/Register.vue'),
+    beforeEnter: authorizationCheck
   },
   {
     path: '/products',
@@ -32,7 +59,7 @@ const routes = [
     component: () => import('./../views/Products.vue'),
     beforeEnter: (to, from, next) => {
       // 重新整理後，重置所有已經選擇的篩選器
-      if(!from.name && (to.query.filterId !== '1' || to.query.seriesId !== 'all' || to.query.keyword !== '')) {
+      if (!from.name && (to.query.filterId !== '1' || to.query.seriesId !== 'all' || to.query.keyword !== '')) {
         next({
           name: 'products',
           query: {
@@ -42,8 +69,6 @@ const routes = [
           }
         })
       }
-
-
       next()
     }
   },
@@ -55,7 +80,8 @@ const routes = [
   {
     path: '/likes',
     name: 'likes',
-    component: () => import('./../views/Likes.vue')
+    component: () => import('./../views/Likes.vue'),
+    beforeEnter: unAuthorization
   },
   {
     path: '/member',
@@ -83,7 +109,8 @@ const routes = [
         name: 'coupon',
         component: () => import('./../components/Coupon.vue')
       }
-    ]
+    ],
+    beforeEnter: unAuthorization
   },
   {
     path: '/checkout',
@@ -98,14 +125,22 @@ const router = new VueRouter({
 
 router.beforeEach((to, from, next) => {
   const currentUser = JSON.parse(localStorage.getItem('currentUser'))
-  const itemInCart = JSON.parse(localStorage.getItem('itemInCart'))
-  if(currentUser) {
-    store.commit('setCurrentUser', currentUser)
-  }
-  if(itemInCart) {
-    store.commit('getCartItem', itemInCart)
-  }
+  const itemInCart = JSON.parse(localStorage.getItem('cartItems'))
+  const likes = JSON.parse(localStorage.getItem('likes'))
 
+  const storeUser = store.state.user
+
+  if(storeUser !== currentUser) {
+    if (currentUser) {
+      store.commit('setCurrentUser', currentUser)
+    }
+    if (itemInCart) {
+      store.commit('getCartItem', itemInCart)
+    }
+    if(likes) {
+      store.commit('getLikes', likes)
+    }
+  }
   next()
 })
 

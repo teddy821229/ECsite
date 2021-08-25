@@ -16,8 +16,34 @@
 
     <v-sheet elevation="8" class="mt-5 mx-auto" max-width="1200">
       <v-container class="card-container px-10">
+        <template v-if="likes.length === 0">
+          <v-sheet
+            height="200"
+            class="d-flex flex-column justify-center align-center"
+          >
+          <p class="noLikes text-h6 grey--text">
+            還沒有收藏任何商品唷，快去逛逛吧！
+          </p>
+          <v-btn
+            outlined
+            width="140px"
+            class="mt-2 py-5 indigo white--text"
+            :to="{ 
+              name: 'products', 
+              query: {
+                filterId: 1,
+                seriesId: 'all',
+                keyword: ''
+              }
+            }"
+          >
+            前往商品列表
+          </v-btn>
+            
+          </v-sheet>
+        </template>
         <ProductsCard
-          v-for="product in items"
+          v-for="product in likes"
           :key="product.id"
           :initialItem="product"
         />
@@ -30,56 +56,8 @@
 import ProductsCard from "./../components/ProductsCard.vue";
 import SearchingBar from "./../components/SearchingBar.vue";
 
-const dummyProducts = [
-  {
-    id: 1,
-    name: "bob色彩系列",
-    price: 550,
-    description: "bob系列第三代，色彩系列！",
-    isLiked: true,
-    inCart: false,
-  },
-  {
-    id: 2,
-    name: "Yuki進化論",
-    price: 280,
-    description: "yuki第四彈，進化論系列！",
-    isLiked: false,
-    inCart: true,
-  },
-  {
-    id: 3,
-    name: "Dimoo夏日",
-    price: 350,
-    description: "Dimoo再出新品，夏日系列！",
-    isLiked: true,
-    inCart: true,
-  },
-  {
-    id: 4,
-    name: "幽靈熊愛與死亡",
-    price: 350,
-    description: "獨角獸家熱門IP第二彈，幽靈熊愛與死亡系列！",
-    isLiked: true,
-    inCart: false,
-  },
-  {
-    id: 5,
-    name: "幽靈熊愛與死亡",
-    price: 350,
-    description: "獨角獸家熱門IP第二彈，幽靈熊愛與死亡系列！",
-    isLiked: true,
-    inCart: false,
-  },
-  {
-    id: 6,
-    name: "幽靈熊愛與死亡",
-    price: 350,
-    description: "獨角獸家熱門IP第二彈，幽靈熊愛與死亡系列！",
-    isLiked: true,
-    inCart: false,
-  },
-];
+import { mapState } from 'vuex'
+
 
 export default {
   name: "Likes",
@@ -87,17 +65,13 @@ export default {
     ProductsCard,
     SearchingBar,
   },
-  created() {
-    this.fetchProducts();
-  },
   data: () => ({
-    items: [],
   }),
   methods: {
-    fetchProducts() {
-      this.items = dummyProducts;
-    },
   },
+  computed: {
+    ...mapState(['likes','cartItems'])
+  }
 };
 </script>
 
