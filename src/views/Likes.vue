@@ -11,6 +11,7 @@
     <v-sheet class="my-3 mx-auto" elevation="4" max-width="1200">
       <SearchingBar 
         target="likes"
+        @after-search="afterSearch"
       />
     </v-sheet>
 
@@ -43,7 +44,7 @@
           </v-sheet>
         </template>
         <ProductsCard
-          v-for="product in likes"
+          v-for="product in filterItems"
           :key="product.id"
           :initialItem="product"
         />
@@ -66,11 +67,18 @@ export default {
     SearchingBar,
   },
   data: () => ({
+    searchInput: ''
   }),
   methods: {
+    afterSearch(keyword) {
+      this.searchInput = keyword;
+    },
   },
   computed: {
-    ...mapState(['likes','cartItems'])
+    ...mapState(['likes']),
+    filterItems() {
+      return this.likes.filter(item => item.name.toLowerCase().includes(this.searchInput))
+    }
   }
 };
 </script>

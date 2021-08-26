@@ -6,9 +6,9 @@ import { Toast } from './../utils/helper'
 
 Vue.use(VueRouter)
 
-const authorizationCheck = (to, from ,next) => {
+const authorizationCheck = (to, from, next) => {
   const currentUser = store.state.user
-  if(currentUser.id !== -1) {
+  if (currentUser.id !== -1) {
     Toast.fire({
       icon: 'error',
       title: '目前無法前往該頁面，請先登出。'
@@ -18,9 +18,9 @@ const authorizationCheck = (to, from ,next) => {
   next()
 }
 
-const unAuthorization = (to, from ,next) => {
+const unAuthorization = (to, from, next) => {
   const currentUser = store.state.user
-  if(currentUser.id === -1) {
+  if (currentUser.id === -1) {
     Toast.fire({
       icon: 'error',
       title: '請先登入'
@@ -81,7 +81,28 @@ const routes = [
     path: '/likes',
     name: 'likes',
     component: () => import('./../views/Likes.vue'),
-    beforeEnter: unAuthorization
+    beforeEnter: (to, from, next) => {
+      // 重新整理後，重置所有已經選擇的篩選器
+      const currentUser = store.state.user
+
+      if (currentUser.id === -1) {
+        Toast.fire({
+          icon: 'error',
+          title: '請先登入'
+        })
+        next('/home')
+      }
+      
+      if (!from.name && to.query.keyword !== '') {
+        next({
+          name: 'likes',
+          query: {
+            keyword: ''
+          }
+        })
+      }
+      next()
+    }
   },
   {
     path: '/member',
@@ -130,14 +151,14 @@ router.beforeEach((to, from, next) => {
 
   const storeUser = store.state.user
 
-  if(storeUser !== currentUser) {
+  if (storeUser !== currentUser) {
     if (currentUser) {
       store.commit('setCurrentUser', currentUser)
     }
     if (itemInCart) {
       store.commit('getCartItem', itemInCart)
     }
-    if(likes) {
+    if (likes) {
       store.commit('getLikes', likes)
     }
   }

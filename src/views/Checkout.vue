@@ -321,7 +321,6 @@
                       v-bind="attrs"
                       v-on="on"
                       :rules="noEmptyRule"
-                      validate-on-blur
                     ></v-text-field>
                   </template>
 
@@ -682,7 +681,7 @@ export default {
       let beforeCoupon = this.totalAmount;
       let fee = 100;
 
-      if (this.selectTicket !== "pass") {
+      if (this.selectTicket !== "pass" && this.totalAmount !== 0) {
         return this.selectTicket.function(beforeCoupon, fee);
       }
       return beforeCoupon;
@@ -697,7 +696,7 @@ export default {
       const { name, address, phone, email, Card } = this.user;
       const { number, validDate, cvv } = Card;
       if (this.nowStep === 2) {
-        return name.trim() && address.trim() && phone.trim() && email.trim()
+        return name.trim() && address.trim() && phone.trim() && email.trim() 
           ? false
           : true;
       }

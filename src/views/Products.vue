@@ -74,6 +74,8 @@ const dummyProducts = [
     name: "bob色彩系列",
     series: 'unicorn1',
     price: 550,
+    rating: 4.5,
+    releaseDate: new Date(2021, 3, 3),
     description: "bob系列第三代，色彩系列！",
   },
   {
@@ -81,6 +83,8 @@ const dummyProducts = [
     name: "Yuki進化論",
     series: 'popmart4',
     price: 280,
+    rating: 4.2,
+    releaseDate: new Date(2021, 7, 3),
     description: "yuki第四彈，進化論系列！",
   },
   {
@@ -88,6 +92,8 @@ const dummyProducts = [
     name: "Dimoo夏日",
     series: 'popmart1',
     price: 350,
+    rating: 4.7,
+    releaseDate: new Date(2021, 7, 20),
     description: "Dimoo再出新品，夏日系列！",
   },
   {
@@ -95,9 +101,12 @@ const dummyProducts = [
     name: "幽靈熊愛與死亡",
     series: 'unicorn4',
     price: 350,
+    rating: 3.9,
+    releaseDate: new Date(2021, 6, 11),
     description: "獨角獸家熱門IP第二彈，幽靈熊愛與死亡系列！",
   },
 ];
+
 
 export default {
   name: "Products",
@@ -112,27 +121,51 @@ export default {
         id: 1,
         code: "latest",
         name: "最新上市",
+        rules: function(items, sort) {
+          if(sort === 'ascending') {
+            return items.sort((a, b) => b.releaseDate - a.releaseDate)
+          }
+          return items.sort((a, b) => a.releaseDate - b.releaseDate)
+        }
       },
-      {
-        id: 2,
-        code: "bestsell",
-        name: "熱門商品",
-      },
+      // {
+      //   id: 2,
+      //   code: "bestsell",
+      //   name: "熱門商品",
+      //   rules: function(items, sort) {
+      //     if(sort === 'descending') {
+      //       return items.sort((a, b) => b.releaseDate - a.releaseDate)
+      //     }
+      //     return items.sort((a, b) => a.releaseDate - b.releaseDate)
+      //   }
+      // },
       {
         id: 3,
         code: "rating",
         name: "綜合評分",
+        rules: function(items, sort) {
+          if(sort === 'ascending') {
+            return items.sort((a, b) => b.rating - a.rating)
+          }
+          return items.sort((a, b) => a.rating - b.rating)
+        }
       },
       {
         id: 4,
         code: "price",
         name: "價格",
+        rules: function(items, sort) {
+          if(sort === 'ascending') {
+            return items.sort((a, b) => b.price - a.price)
+          }
+          return items.sort((a, b) => a.price - b.price)
+        }
       },
     ],
     items: [],
     selectFilter: 1,
     selectSeries: "all",
-    sort: "ascending",
+    sort: "descending",
     searchInput: "",
   }),
   created() {
@@ -178,11 +211,18 @@ export default {
     ...mapState(["user"]),
     filterProducts() {
       let afterFilterList = this.items
+
+       afterFilterList = afterFilterList.filter(item => item.name.toLowerCase().includes(this.searchInput))
+
+      // series
       if(this.selectSeries !== 'all') 
 
       afterFilterList =  afterFilterList.filter(item => item.series.includes(this.selectSeries))
 
-      // afterFilter
+      // sort by
+
+      const filter = this.tags.find(tag => tag.id === this.selectFilter)
+      afterFilterList = filter.rules(afterFilterList, this.sort)
 
       return afterFilterList
 
