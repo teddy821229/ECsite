@@ -2,7 +2,7 @@
   <v-card class="mx-4 my-6 product-card" max-width="220">
     <v-img
       height="146"
-      src="https://cdn.vuetifyjs.com/images/cards/cooking.png"
+      :src="`https://picsum.photos/id/${10 + item.id}/500/300`"
       lazy-src="https://picsum.photos/id/11/100/60"
     ></v-img>
     <div class="card-section">
@@ -80,7 +80,6 @@ export default {
       id: -1,
       name: "",
       price: 0,
-      isLiked: false,
       stock: 50,
     },
   }),

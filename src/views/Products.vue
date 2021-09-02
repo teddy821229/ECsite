@@ -3,6 +3,7 @@
     <v-sheet class="mx-auto px-3 my-5" elevation="12" max-width="1200" rounded>
       <v-row>
         <ProductsCategoryList
+          :series-list="seriesList"
           :filterId="selectFilter"
           :searchInput="searchInput"
           @after-change-category="afterChangeCategory"
@@ -50,11 +51,17 @@
           <v-divider></v-divider>
           <v-container class="product-container px-3">
             <ProductsCard
-              v-for="item in filterProducts"
+              v-for="item in afterPaginate"
               :key="item.id"
               :initial-item="item"
             />
           </v-container>
+          <div class="text-center">
+            <v-pagination 
+              v-model="showIndex.nowPage" 
+              :length="totalPage"
+            ></v-pagination>
+          </div>
         </v-col>
       </v-row>
     </v-sheet>
@@ -62,51 +69,19 @@
 </template>
 
 <script>
+import Papa from "papaparse";
+
 import ProductsCategoryList from "./../components/ProductsCategoryList.vue";
 import SearchingBar from "./../components/SearchingBar.vue";
 import ProductsCard from "./../components/ProductsCard.vue";
 
 import { mapState } from "vuex";
 
-const dummyProducts = [
-  {
-    id: 1,
-    name: "bob色彩系列",
-    series: 'unicorn1',
-    price: 550,
-    rating: 4.5,
-    releaseDate: new Date(2021, 3, 3),
-    description: "bob系列第三代，色彩系列！",
-  },
-  {
-    id: 2,
-    name: "Yuki進化論",
-    series: 'popmart4',
-    price: 280,
-    rating: 4.2,
-    releaseDate: new Date(2021, 7, 3),
-    description: "yuki第四彈，進化論系列！",
-  },
-  {
-    id: 3,
-    name: "Dimoo夏日",
-    series: 'popmart1',
-    price: 350,
-    rating: 4.7,
-    releaseDate: new Date(2021, 7, 20),
-    description: "Dimoo再出新品，夏日系列！",
-  },
-  {
-    id: 4,
-    name: "幽靈熊愛與死亡",
-    series: 'unicorn4',
-    price: 350,
-    rating: 3.9,
-    releaseDate: new Date(2021, 6, 11),
-    description: "獨角獸家熱門IP第二彈，幽靈熊愛與死亡系列！",
-  },
-];
+const SeriesURL =
+  "https://docs.google.com/spreadsheets/d/e/2PACX-1vT54r-aPFDVkBm3KfUCm3C1N6kwcAN7fVqFzsUc2IKShjEpO3TQjKPKY2zUbkeQkQD6OaQ56CyR0ECC/pub?gid=11022087&single=true&output=csv";
 
+const ProductsURL =
+  "https://docs.google.com/spreadsheets/d/e/2PACX-1vT54r-aPFDVkBm3KfUCm3C1N6kwcAN7fVqFzsUc2IKShjEpO3TQjKPKY2zUbkeQkQD6OaQ56CyR0ECC/pub?gid=0&single=true&output=csv";
 
 export default {
   name: "Products",
@@ -121,12 +96,12 @@ export default {
         id: 1,
         code: "latest",
         name: "最新上市",
-        rules: function(items, sort) {
-          if(sort === 'ascending') {
-            return items.sort((a, b) => b.releaseDate - a.releaseDate)
+        rules: function (items, sort) {
+          if (sort === "ascending") {
+            return items.sort((a, b) => b.releaseDate - a.releaseDate);
           }
-          return items.sort((a, b) => a.releaseDate - b.releaseDate)
-        }
+          return items.sort((a, b) => a.releaseDate - b.releaseDate);
+        },
       },
       // {
       //   id: 2,
@@ -143,36 +118,50 @@ export default {
         id: 3,
         code: "rating",
         name: "綜合評分",
-        rules: function(items, sort) {
-          if(sort === 'ascending') {
-            return items.sort((a, b) => b.rating - a.rating)
+        rules: function (items, sort) {
+          if (sort === "ascending") {
+            return items.sort((a, b) => b.rating - a.rating);
           }
-          return items.sort((a, b) => a.rating - b.rating)
-        }
+          return items.sort((a, b) => a.rating - b.rating);
+        },
       },
       {
         id: 4,
         code: "price",
         name: "價格",
-        rules: function(items, sort) {
-          if(sort === 'ascending') {
-            return items.sort((a, b) => b.price - a.price)
+        rules: function (items, sort) {
+          if (sort === "ascending") {
+            return items.sort((a, b) => b.price - a.price);
           }
-          return items.sort((a, b) => a.price - b.price)
-        }
+          return items.sort((a, b) => a.price - b.price);
+        },
       },
     ],
     items: [],
+    seriesList: [],
     selectFilter: 1,
     selectSeries: "all",
-    sort: "descending",
+    sort: "ascending",
     searchInput: "",
+    showIndex: {
+      nowPage: 1,
+      perPage: 9,
+    },
   }),
+  watch: {
+    showIndex: {
+      handler: () => {
+        document.documentElement.scrollTop = 0
+      },
+      deep: true
+    }
+  },
   created() {
     this.fetchProducts();
     const { filterId = "", seriesId = "" } = this.$route.query;
     this.selectSeries = seriesId;
     this.selectFilter = Number(filterId);
+    this.fetchList();
   },
   beforeRouteUpdate(to, from, next) {
     const { filterId = "", seriesId = "" } = to.query;
@@ -183,50 +172,109 @@ export default {
   },
   methods: {
     fetchProducts() {
-      this.items = dummyProducts;
+      Papa.parse(ProductsURL, {
+        download: true,
+        header: true,
+        dynamicTyping: true,
+        complete: (results) => {
+          results.data.forEach((product) => {
+            this.items.push({
+              ...product,
+              releaseDate: new Date(product.releaseDate),
+            });
+          });
+        },
+      });
+    },
+    fetchList() {
+      Papa.parse(SeriesURL, {
+        download: true,
+        header: true,
+        dynamicTyping: true,
+        complete: (results) => {
+          // this.seriesList = results.data
+          results.data.forEach((series) => {
+            if (this.seriesList.some((item) => item.id === series.seriesId)) {
+              const target = this.seriesList.find(
+                (item) => item.id === series.seriesId
+              );
+              target.Items.push({
+                id: series.ipId,
+                title: series.ipName,
+              });
+            } else {
+              this.seriesList.push({
+                id: series.seriesId,
+                title: series.seriesName,
+                Items: [
+                  {
+                    id: series.ipId,
+                    title: series.ipName,
+                  },
+                ],
+              });
+            }
+          });
+        },
+      });
     },
     toggleSort() {
       if (this.sort === "ascending") {
         this.sort = "descending";
-        // TODO: sort data
+        this.showIndex.nowPage = 1
         return;
       }
       if (this.sort === "descending") {
         this.sort = "ascending";
-        // TODO: sort data
+        this.showIndex.nowPage = 1
         return;
       }
     },
     afterChangeCategory(id) {
       this.selectSeries = id;
       this.searchInput = "";
+      this.showIndex.nowPage = 1
     },
     afterSearch(keyword) {
       this.selectSeries = "all";
       this.selectFilter = 1;
       this.searchInput = keyword;
+      this.showIndex.nowPage = 1
     },
   },
   computed: {
     ...mapState(["user"]),
     filterProducts() {
-      let afterFilterList = this.items
+      let afterFilterList = this.items;
 
-       afterFilterList = afterFilterList.filter(item => item.name.toLowerCase().includes(this.searchInput))
+      afterFilterList = afterFilterList.filter((item) =>
+        item.name.toLowerCase().includes(this.searchInput)
+      );
 
       // series
-      if(this.selectSeries !== 'all') 
-
-      afterFilterList =  afterFilterList.filter(item => item.series.includes(this.selectSeries))
+      if (this.selectSeries !== "all")
+        afterFilterList = afterFilterList.filter((item) =>
+          item.series.includes(this.selectSeries)
+        );
 
       // sort by
 
-      const filter = this.tags.find(tag => tag.id === this.selectFilter)
-      afterFilterList = filter.rules(afterFilterList, this.sort)
+      const filter = this.tags.find((tag) => tag.id === this.selectFilter);
+      afterFilterList = filter.rules(afterFilterList, this.sort);
+
+      // pagination
 
       return afterFilterList
-
-    }
+    },
+    afterPaginate() {
+      return this.filterProducts.slice(
+        (this.showIndex.nowPage - 1) * this.showIndex.perPage,
+        this.showIndex.nowPage * this.showIndex.perPage
+      );
+    },
+    totalPage() {
+      return Math.ceil(this.filterProducts.length / this.showIndex.perPage);
+    },
   },
 };
 </script>

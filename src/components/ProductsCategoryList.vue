@@ -22,7 +22,7 @@
         <v-list-item-title>全部商品</v-list-item-title>
       </v-list-item>
       <v-list-group
-        v-for="item in items"
+        v-for="item in seriesList"
         :key="item.id"
         :value="querySeriesMatch(item.id)"
         active-class="indigo lighten-4"
@@ -53,7 +53,7 @@
         </v-list-item>
         <!-- TODO: 所有的 category sort 都使用prop進來的！！！ -->
         <v-list-item
-          v-for="child in item.items"
+          v-for="child in item.Items"
           :key="child.id"
           class="pl-10"
           exact-active-class="indigo white--text"
@@ -79,70 +79,6 @@
 </template>
 
 <script>
-const dummyCategories = [
-  {
-    id: "unicorn",
-    title: "尋找獨角獸",
-    items: [
-      {
-        id: "unicorn1",
-        title: "Bob男友",
-      },
-      {
-        id: "unicorn2",
-        title: "卓大王",
-      },
-      {
-        id: "unicorn3",
-        title: "Rico",
-      },
-      {
-        id: 'unicorn4',
-        title: '幽靈熊'
-      },
-    ],
-  },
-  {
-    id: "popmart",
-    title: "泡泡瑪特",
-    items: [
-      {
-        id: "popmart1",
-        title: "Dimoo",
-      },
-      {
-        id: "popmart2",
-        title: "Labubu",
-      },
-      {
-        id: "popmart3",
-        title: "小甜豆",
-      },
-      {
-        id: "popmart4",
-        title: "YUKI",
-      },
-    ],
-  },
-  {
-    id: "52toys",
-    title: "52TOYS",
-    items: [
-      {
-        id: "52toys1",
-        title: "迪士尼公主系列",
-      },
-      {
-        id: "52toys2",
-        title: "lulu豬",
-      },
-    ],
-  },
-  {
-    id: "case",
-    title: "陳列小幫手",
-  },
-];
 
 export default {
   name: "ProductsCategoryList",
@@ -154,18 +90,17 @@ export default {
     searchInput: {
       type: String,
       default: ''
+    },
+    seriesList: {
+      type: Array,
+      default: () => {
+        return []
+      }
     }
   },
-  created() {
-    this.fetchCategories();
-  },
   data: () => ({
-    items: [],
   }),
   methods: {
-    fetchCategories() {
-      this.items = dummyCategories;
-    },
     handleChange(id) {
       this.$emit("after-change-category", id);
     },

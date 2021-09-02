@@ -75,137 +75,13 @@
 import MainCarousel from "./../components/MainCarousel";
 import NewestItems from "./../components/NewestItems.vue";
 import { mapState } from "vuex";
+import Papa from "papaparse";
 
-const dummyNuwest = [
-  {
-    id: 1,
-    name: "bob色彩系列",
-    price: 55000,
-    description: "bob系列第三代，色彩系列！",
-  },
-  {
-    id: 2,
-    name: "Yuki進化論",
-    price: 280,
-    description: "yuki第四彈，進化論系列！",
-  },
-  {
-    id: 3,
-    name: "Dimoo夏日",
-    price: 350,
-    description: "Dimoo再出新品，夏日系列！",
-  },
-  {
-    id: 4,
-    name: "幽靈熊愛與死亡",
-    price: 350,
-    description: "獨角獸家熱門IP第二彈，幽靈熊愛與死亡系列！",
-  },
-  {
-    id: 5,
-    name: "幽靈熊愛與死亡",
-    price: 350,
-    description: "獨角獸家熱門IP第二彈，幽靈熊愛與死亡系列！",
-  },
-  {
-    id: 6,
-    name: "幽靈熊愛與死亡",
-    price: 350,
-    description: "獨角獸家熱門IP第二彈，幽靈熊愛與死亡系列！",
-  },
-];
+const ProductsURL =
+  "https://docs.google.com/spreadsheets/d/e/2PACX-1vT54r-aPFDVkBm3KfUCm3C1N6kwcAN7fVqFzsUc2IKShjEpO3TQjKPKY2zUbkeQkQD6OaQ56CyR0ECC/pub?gid=0&single=true&output=csv";
 
-const dummyTopFiveItem = [
-  {
-    id: 1,
-    name: "bob色彩系列",
-    price: 500,
-    description: "bob系列第三代，色彩系列！",
-    categoryId: "popmart",
-  },
-  {
-    id: 2,
-    name: "bob環遊系列",
-    price: 550,
-    description: "bob系列第三代，色彩系列！",
-    categoryId: "popmart",
-  },
-  {
-    id: 3,
-    name: "Rico海島",
-    price: 550,
-    description: "我是獨角獸系列",
-    categoryId: "popmart",
-  },
-  {
-    id: 4,
-    name: "幽靈熊旅館",
-    price: 550,
-    description: "幽靈熊最新第三代，跟前幾代長很像。",
-    categoryId: "popmart",
-  },
-  {
-    id: 5,
-    name: "幽靈熊愛與死亡",
-    price: 550,
-    description: "幽靈熊最新第二代",
-    categoryId: "popmart",
-  },
-  {
-    id: 6,
-    name: "小甜豆秋葉原",
-    price: 550,
-    description: "小甜豆秋葉原",
-    categoryId: "unicorn",
-  },
-  {
-    id: 7,
-    name: "Dimoo動物",
-    price: 550,
-    description: "Dimoo動物",
-    categoryId: "unicorn",
-  },
-  {
-    id: 8,
-    name: "豬女",
-    price: 550,
-    description: "豬女",
-    categoryId: "unicorn",
-  },
-  {
-    id: 9,
-    name: "眼淚",
-    price: 550,
-    description: "眼淚",
-    categoryId: "unicorn",
-  },
-  {
-    id: 10,
-    name: "yuki進化論",
-    price: 550,
-    description: "yuki進化論",
-    categoryId: "unicorn",
-  },
-];
-
-const dummySeries = [
-  {
-    id: "popmart",
-    name: "泡泡瑪特",
-  },
-  {
-    id: "unicorn",
-    name: "尋找獨角獸",
-  },
-  {
-    id: "52toys",
-    name: "52TOYS",
-  },
-  {
-    id: 22,
-    name: "潮玩",
-  },
-];
+const SeriesURL =
+  "https://docs.google.com/spreadsheets/d/e/2PACX-1vT54r-aPFDVkBm3KfUCm3C1N6kwcAN7fVqFzsUc2IKShjEpO3TQjKPKY2zUbkeQkQD6OaQ56CyR0ECC/pub?gid=11022087&single=true&output=csv";
 
 export default {
   name: "Home",
@@ -221,15 +97,56 @@ export default {
     newestItems: [],
     topFiveItems: [],
     series: [],
-    selectCategory: "popmart",
+    selectCategory: "unicorn",
   }),
   methods: {
     fetchProducts() {
-      this.newestItems = dummyNuwest;
-      this.topFiveItems = dummyTopFiveItem;
+      Papa.parse(ProductsURL, {
+        download: true,
+        header: true,
+        dynamicTyping: true,
+        complete: (results) => {
+          const res = [];
+          results.data.forEach((product) => {
+            res.push({
+              ...product,
+              releaseDate: new Date(product.releaseDate),
+            });
+          });
+          res.sort((a, b) => b.releaseDate - a.releaseDate)
+          this.newestItems = res.slice(0, 8)
+
+          const popmart = res.filter(item => item.series.includes('popmart')).sort((a, b) => b.rating - a.rating).slice(0, 5)
+          const unicorn = res.filter(item => item.series.includes('unicorn')).sort((a, b) => b.rating - a.rating).slice(0, 5)
+          const toys = res.filter(item => item.series.includes('52toys')).sort((a, b) => b.rating - a.rating).slice(0, 5)
+          const mountain = res.filter(item => item.series.includes('mountain')).sort((a, b) => b.rating - a.rating).slice(0, 5)
+
+          popmart.forEach(res => this.topFiveItems.push(res))
+          unicorn.forEach(res => this.topFiveItems.push(res))
+          toys.forEach(res => this.topFiveItems.push(res))
+          mountain.forEach(res => this.topFiveItems.push(res))
+
+        },
+      });
     },
     fetchSeries() {
-      this.series = dummySeries;
+      Papa.parse(SeriesURL, {
+        download: true,
+        header: true,
+        dynamicTyping: true,
+        complete: (results) => {
+          results.data.forEach((res) => {
+            if (this.series.some((series) => series.id === res.seriesId)) {
+              return;
+            } else {
+              this.series.push({
+                id: res.seriesId,
+                name: res.seriesName,
+              });
+            }
+          });
+        },
+      });
     },
     toPage() {
       document.documentElement.scrollTop = 0;
@@ -246,7 +163,7 @@ export default {
   computed: {
     filteredTopFive() {
       return this.topFiveItems.filter(
-        (item) => item.categoryId === this.selectCategory
+        (item) => item.series.includes(this.selectCategory)
       );
     },
     ...mapState(["user"]),

@@ -27,7 +27,6 @@
               readonly
               small
             ></v-rating>
-            <div class="rating-count pl-4">447 筆評論</div>
           </div>
           <div class="amount text-h6 mt-10">
             售價: <span class="ml-5">$ {{ Item.price }} / 個</span>
@@ -107,20 +106,33 @@
 import { mapState } from "vuex";
 import { Toast } from "./../utils/helper";
 import { v4 as uuidv4 } from "uuid";
+import Papa from "papaparse";
+
+const ProductsURL =
+  "https://docs.google.com/spreadsheets/d/e/2PACX-1vT54r-aPFDVkBm3KfUCm3C1N6kwcAN7fVqFzsUc2IKShjEpO3TQjKPKY2zUbkeQkQD6OaQ56CyR0ECC/pub?gid=0&single=true&output=csv";
+
 
 export default {
   name: "Product",
   data: () => ({
     Item: {
-      id: 1,
-      name: "BOB色彩系列",
-      rating: 4.5,
-      commentCounts: "",
-      price: 550,
-      stock: 15,
+      id: -1,
+      name: "",
+      rating: 0,
+      price: 0,
+      stock: 0,
     },
     quantity: 1,
   }),
+  created() {
+    const { id: productId } = this.$route.params
+    this.fetchProduct(productId)
+  },
+  beforeRouteUpdate(to, from, next) {
+    const { id: productId } = to.params
+    this.fetchProduct(productId)
+    next()
+  },
   computed: {
     ...mapState(["user", "itemInCart", "likes"]),
     isInCart() {
@@ -133,6 +145,28 @@ export default {
     },
   },
   methods: {
+    fetchProduct(productId) {
+      Papa.parse(ProductsURL, {
+        download: true,
+        header: true,
+        dynamicTyping: true,
+        complete: (results) => {
+          results.data.map(product => {
+            if(productId > results.data.length) {
+              Toast.fire({
+                icon: 'error',
+                title: '該商品不存在'
+              })
+            } else if(product.id == productId) {
+              this.Item = {
+                ...this.Item,
+                ...product
+              }
+            }
+          })
+        }
+      })
+    },
     addQuantity() {
       if (this.quantity === this.Item.stock) {
         return;
