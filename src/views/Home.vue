@@ -1,73 +1,82 @@
 <template>
   <v-container class="content-container">
-    <MainCarousel class="mt-10" />
-    <v-container>
-      <div class="subtitle">最新商品</div>
+    <div v-if="status.isLoading" class="loading-box">
+      <half-circle-spinner
+        :animation-duration="1200"
+        :size="80"
+        color="#1A237E"
+      />
+    </div>
+    <template v-else>
+      <MainCarousel class="mt-10" />
+      <v-container>
+        <div class="subtitle">最新商品</div>
 
-      <v-divider></v-divider>
-      <!-- TODO: decide to use overflow or slide-group -->
-      <v-sheet elevation="12" class="mt-10 mx-auto py-8" max-width="1200px">
-        <v-slide-group show-arrows>
-          <NewestItems
-            v-for="item in newestItems"
-            :key="item.id"
-            :initial-item="item"
-          />
-        </v-slide-group>
-      </v-sheet>
+        <v-divider></v-divider>
+        <!-- TODO: decide to use overflow or slide-group -->
+        <v-sheet elevation="12" class="mt-10 mx-auto py-8" max-width="1200px">
+          <v-slide-group show-arrows>
+            <NewestItems
+              v-for="item in newestItems"
+              :key="item.id"
+              :initial-item="item"
+            />
+          </v-slide-group>
+        </v-sheet>
 
-      <!-- TODO: new item card -->
-    </v-container>
+        <!-- TODO: new item card -->
+      </v-container>
 
-    <v-container>
-      <div class="subtitle">熱銷商品</div>
-      <v-divider></v-divider>
+      <v-container>
+        <div class="subtitle">熱銷商品</div>
+        <v-divider></v-divider>
 
-      <v-sheet elevation="12" class="mt-10 mx-auto" max-width="1200px">
-        <v-tabs fixed-tabs color="indigo" class="py-2 px-8">
-          <v-tab
-            v-for="tab in series"
-            :key="tab.id"
-            @click="selectCategory = tab.id"
-          >
-            {{ tab.name }}
-          </v-tab>
-        </v-tabs>
-        <v-container class="products-container px-3 py-10">
-          <NewestItems
-            v-for="item in filteredTopFive"
-            :key="item.id"
-            :initial-item="item"
-          />
-          <v-card class="more-card" max-width="296" elevation="0">
-            <v-hover v-slot="{ hover }">
-              <v-sheet
-                class="
-                  circle-container
-                  d-flex
-                  align-center
-                  justify-center
-                  flex-column
-                  rounded-circle
-                "
-                :color="hover ? 'indigo' : 'white'"
-                :elevation="hover ? 8 : 4"
-                @click.prevent.stop="toPage"
-              >
-                <v-icon :color="hover ? 'white' : 'indigo'">
-                  mdi-plus-circle-outline
-                </v-icon>
-                <span
-                  class="text-h6"
-                  :class="hover ? 'white--text' : 'indigo--text'"
-                  >看更多</span
+        <v-sheet elevation="12" class="mt-10 mx-auto" max-width="1200px">
+          <v-tabs fixed-tabs color="indigo" class="py-2 px-8">
+            <v-tab
+              v-for="tab in series"
+              :key="tab.id"
+              @click="selectCategory = tab.id"
+            >
+              {{ tab.name }}
+            </v-tab>
+          </v-tabs>
+          <v-container class="products-container px-3 py-10">
+            <NewestItems
+              v-for="item in filteredTopFive"
+              :key="item.id"
+              :initial-item="item"
+            />
+            <v-card class="more-card" max-width="296" elevation="0">
+              <v-hover v-slot="{ hover }">
+                <v-sheet
+                  class="
+                    circle-container
+                    d-flex
+                    align-center
+                    justify-center
+                    flex-column
+                    rounded-circle
+                  "
+                  :color="hover ? 'indigo' : 'white'"
+                  :elevation="hover ? 8 : 4"
+                  @click.prevent.stop="toPage"
                 >
-              </v-sheet>
-            </v-hover>
-          </v-card>
-        </v-container>
-      </v-sheet>
-    </v-container>
+                  <v-icon :color="hover ? 'white' : 'indigo'">
+                    mdi-plus-circle-outline
+                  </v-icon>
+                  <span
+                    class="text-h6"
+                    :class="hover ? 'white--text' : 'indigo--text'"
+                    >看更多</span
+                  >
+                </v-sheet>
+              </v-hover>
+            </v-card>
+          </v-container>
+        </v-sheet>
+      </v-container>
+    </template>
   </v-container>
 </template>
 
@@ -76,6 +85,8 @@ import MainCarousel from "./../components/MainCarousel";
 import NewestItems from "./../components/NewestItems.vue";
 import { mapState } from "vuex";
 import Papa from "papaparse";
+
+import { HalfCircleSpinner } from "epic-spinners";
 
 const ProductsURL =
   "https://docs.google.com/spreadsheets/d/e/2PACX-1vT54r-aPFDVkBm3KfUCm3C1N6kwcAN7fVqFzsUc2IKShjEpO3TQjKPKY2zUbkeQkQD6OaQ56CyR0ECC/pub?gid=0&single=true&output=csv";
@@ -88,6 +99,7 @@ export default {
   components: {
     MainCarousel,
     NewestItems,
+    HalfCircleSpinner,
   },
   created() {
     this.fetchProducts();
@@ -98,6 +110,9 @@ export default {
     topFiveItems: [],
     series: [],
     selectCategory: "unicorn",
+    status: {
+      isLoading: true,
+    },
   }),
   methods: {
     fetchProducts() {
@@ -113,19 +128,30 @@ export default {
               releaseDate: new Date(product.releaseDate),
             });
           });
-          res.sort((a, b) => b.releaseDate - a.releaseDate)
-          this.newestItems = res.slice(0, 8)
+          res.sort((a, b) => b.releaseDate - a.releaseDate);
+          this.newestItems = res.slice(0, 8);
 
-          const popmart = res.filter(item => item.series.includes('popmart')).sort((a, b) => b.rating - a.rating).slice(0, 5)
-          const unicorn = res.filter(item => item.series.includes('unicorn')).sort((a, b) => b.rating - a.rating).slice(0, 5)
-          const toys = res.filter(item => item.series.includes('52toys')).sort((a, b) => b.rating - a.rating).slice(0, 5)
-          const mountain = res.filter(item => item.series.includes('mountain')).sort((a, b) => b.rating - a.rating).slice(0, 5)
+          const popmart = res
+            .filter((item) => item.series.includes("popmart"))
+            .sort((a, b) => b.rating - a.rating)
+            .slice(0, 5);
+          const unicorn = res
+            .filter((item) => item.series.includes("unicorn"))
+            .sort((a, b) => b.rating - a.rating)
+            .slice(0, 5);
+          const toys = res
+            .filter((item) => item.series.includes("52toys"))
+            .sort((a, b) => b.rating - a.rating)
+            .slice(0, 5);
+          const mountain = res
+            .filter((item) => item.series.includes("mountain"))
+            .sort((a, b) => b.rating - a.rating)
+            .slice(0, 5);
 
-          popmart.forEach(res => this.topFiveItems.push(res))
-          unicorn.forEach(res => this.topFiveItems.push(res))
-          toys.forEach(res => this.topFiveItems.push(res))
-          mountain.forEach(res => this.topFiveItems.push(res))
-
+          popmart.forEach((res) => this.topFiveItems.push(res));
+          unicorn.forEach((res) => this.topFiveItems.push(res));
+          toys.forEach((res) => this.topFiveItems.push(res));
+          mountain.forEach((res) => this.topFiveItems.push(res));
         },
       });
     },
@@ -145,6 +171,7 @@ export default {
               });
             }
           });
+          this.status.isLoading = false;
         },
       });
     },
@@ -162,8 +189,8 @@ export default {
   },
   computed: {
     filteredTopFive() {
-      return this.topFiveItems.filter(
-        (item) => item.series.includes(this.selectCategory)
+      return this.topFiveItems.filter((item) =>
+        item.series.includes(this.selectCategory)
       );
     },
     ...mapState(["user"]),
@@ -211,5 +238,12 @@ export default {
   width: 100px;
   height: 100px;
   cursor: pointer;
+}
+
+.loading-box {
+  height: 600px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 </style>

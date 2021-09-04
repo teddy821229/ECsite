@@ -21,6 +21,15 @@
       >
         <v-list-item-title>全部商品</v-list-item-title>
       </v-list-item>
+      <div v-if="isLoading" class="loading-box"> 
+        <half-circle-spinner
+              :animation-duration="1200"
+              :size="80"
+              color="#1A237E"
+            />
+      </div>
+      <template v-else>
+      
       <v-list-group
         v-for="item in seriesList"
         :key="item.id"
@@ -74,14 +83,19 @@
           </v-list-item-content>
         </v-list-item>
       </v-list-group>
+      </template>
     </v-list>
   </v-col>
 </template>
 
 <script>
+import { HalfCircleSpinner } from "epic-spinners";
 
 export default {
   name: "ProductsCategoryList",
+  components: {
+    HalfCircleSpinner
+  },
   props: {
     filterId: {
       type: Number,
@@ -96,6 +110,10 @@ export default {
       default: () => {
         return []
       }
+    },
+    isLoading: {
+      type: Boolean,
+      default: true
     }
   },
   data: () => ({
@@ -115,3 +133,12 @@ export default {
   },
 };
 </script>
+
+<style scoped>
+  .loading-box {
+    height: 400px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+</style>

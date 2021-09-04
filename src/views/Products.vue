@@ -6,6 +6,7 @@
           :series-list="seriesList"
           :filterId="selectFilter"
           :searchInput="searchInput"
+          :is-loading="status.isLoading"
           @after-change-category="afterChangeCategory"
         />
         <v-divider vertical></v-divider>
@@ -49,19 +50,28 @@
           </v-sheet>
 
           <v-divider></v-divider>
-          <v-container class="product-container px-3">
-            <ProductsCard
-              v-for="item in afterPaginate"
-              :key="item.id"
-              :initial-item="item"
+          <div v-if="status.isLoading" class="loading-box">
+            <half-circle-spinner
+              :animation-duration="1200"
+              :size="80"
+              color="#1A237E"
             />
-          </v-container>
-          <div class="text-center">
-            <v-pagination 
-              v-model="showIndex.nowPage" 
-              :length="totalPage"
-            ></v-pagination>
           </div>
+          <template v-else>
+            <v-container class="product-container px-3">
+              <ProductsCard
+                v-for="item in afterPaginate"
+                :key="item.id"
+                :initial-item="item"
+              />
+            </v-container>
+            <div class="text-center">
+              <v-pagination
+                v-model="showIndex.nowPage"
+                :length="totalPage"
+              ></v-pagination>
+            </div>
+          </template>
         </v-col>
       </v-row>
     </v-sheet>
@@ -77,6 +87,8 @@ import ProductsCard from "./../components/ProductsCard.vue";
 
 import { mapState } from "vuex";
 
+import { HalfCircleSpinner } from "epic-spinners";
+
 const SeriesURL =
   "https://docs.google.com/spreadsheets/d/e/2PACX-1vT54r-aPFDVkBm3KfUCm3C1N6kwcAN7fVqFzsUc2IKShjEpO3TQjKPKY2zUbkeQkQD6OaQ56CyR0ECC/pub?gid=11022087&single=true&output=csv";
 
@@ -89,6 +101,7 @@ export default {
     ProductsCategoryList,
     SearchingBar,
     ProductsCard,
+    HalfCircleSpinner,
   },
   data: () => ({
     tags: [
@@ -147,14 +160,17 @@ export default {
       nowPage: 1,
       perPage: 9,
     },
+    status: {
+      isLoading: true,
+    },
   }),
   watch: {
     showIndex: {
       handler: () => {
-        document.documentElement.scrollTop = 0
+        document.documentElement.scrollTop = 0;
       },
-      deep: true
-    }
+      deep: true,
+    },
   },
   created() {
     this.fetchProducts();
@@ -215,31 +231,32 @@ export default {
               });
             }
           });
+          this.status.isLoading = false;
         },
       });
     },
     toggleSort() {
       if (this.sort === "ascending") {
         this.sort = "descending";
-        this.showIndex.nowPage = 1
+        this.showIndex.nowPage = 1;
         return;
       }
       if (this.sort === "descending") {
         this.sort = "ascending";
-        this.showIndex.nowPage = 1
+        this.showIndex.nowPage = 1;
         return;
       }
     },
     afterChangeCategory(id) {
       this.selectSeries = id;
       this.searchInput = "";
-      this.showIndex.nowPage = 1
+      this.showIndex.nowPage = 1;
     },
     afterSearch(keyword) {
       this.selectSeries = "all";
       this.selectFilter = 1;
       this.searchInput = keyword;
-      this.showIndex.nowPage = 1
+      this.showIndex.nowPage = 1;
     },
   },
   computed: {
@@ -264,7 +281,7 @@ export default {
 
       // pagination
 
-      return afterFilterList
+      return afterFilterList;
     },
     afterPaginate() {
       return this.filterProducts.slice(
@@ -299,5 +316,11 @@ export default {
   justify-items: center;
   grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
   grid-gap: 0 10px;
+}
+.loading-box {
+  height: 300px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 </style>
