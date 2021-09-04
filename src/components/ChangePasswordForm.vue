@@ -64,6 +64,7 @@
 import { Toast } from "./../utils/helper";
 import { HalfCircleSpinner } from "epic-spinners";
 import Papa from 'papaparse'
+import { mapState } from 'vuex'
 
 const UserURL =
   "https://docs.google.com/spreadsheets/d/e/2PACX-1vT54r-aPFDVkBm3KfUCm3C1N6kwcAN7fVqFzsUc2IKShjEpO3TQjKPKY2zUbkeQkQD6OaQ56CyR0ECC/pub?gid=1020618966&single=true&output=csv";
@@ -96,7 +97,8 @@ export default {
     },
   },
   created() {
-    this.fetchUser(666)
+    const userId = this.user.id
+    this.fetchUser(userId)
   },
   methods: {
     fetchUser(id) {
@@ -160,6 +162,7 @@ export default {
       }
       return true;
     },
+    ...mapState(['user'])
   },
 };
 </script>

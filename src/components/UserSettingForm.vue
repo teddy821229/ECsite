@@ -11,14 +11,14 @@
       <template v-else>
         <v-form ref="form" v-model="valid">
           <v-text-field
-            v-model="user.account"
+            v-model="userData.account"
             required
             readonly
             label="帳號："
           ></v-text-field>
 
           <v-text-field
-            v-model="user.username"
+            v-model="userData.username"
             label="姓名："
             :rules="nameRules"
             clearable
@@ -35,7 +35,7 @@
           >
             <template v-slot:activator="{ on, attrs }">
               <v-text-field
-                v-model="user.birthday"
+                v-model="userData.birthday"
                 label="生日："
                 readonly
                 v-bind="attrs"
@@ -45,7 +45,7 @@
 
             <v-date-picker
               no-title
-              v-model="user.birthday"
+              v-model="userData.birthday"
               active-picker="YEAR"
               :max="
                 new Date(Date.now() - new Date().getTimezoneOffset() * 60000)
@@ -58,21 +58,21 @@
           </v-menu>
 
           <v-select
-            v-model="user.sex"
+            v-model="userData.sex"
             :items="sexChoices"
             :rules="[(v) => !!v || '需選擇性別']"
             label="性別："
           ></v-select>
 
           <v-text-field
-            v-model="user.phone"
+            v-model="userData.phone"
             label="手機號碼"
             :rules="[(v) => !!v || '手機號碼不能為空白']"
             clearable
           ></v-text-field>
 
           <v-text-field
-            v-model="user.email"
+            v-model="userData.email"
             label="電子信箱："
             :rules="emailRules"
             clearable
@@ -103,7 +103,7 @@
 <script>
 import Papa from "papaparse";
 import { HalfCircleSpinner } from "epic-spinners";
-
+import { mapState } from 'vuex'
 
 const UserURL =
   "https://docs.google.com/spreadsheets/d/e/2PACX-1vT54r-aPFDVkBm3KfUCm3C1N6kwcAN7fVqFzsUc2IKShjEpO3TQjKPKY2zUbkeQkQD6OaQ56CyR0ECC/pub?gid=1020618966&single=true&output=csv";
@@ -114,7 +114,7 @@ export default {
     HalfCircleSpinner,
   },
   data: () => ({
-    user: {
+    userData: {
       account: "",
       username: "",
       sex: "",
@@ -143,7 +143,8 @@ export default {
     },
   }),
   created() {
-    this.fetchUser(666);
+    const userId = this.user.id
+    this.fetchUser(userId);
   },
   methods: {
     fetchUser(id) {
@@ -153,8 +154,8 @@ export default {
         dynamicTyping: true,
         complete: (results) => {
           const user = results.data.find((user) => user.id == id);
-          this.user = {
-            ...this.user,
+          this.userData = {
+            ...this.userData,
             ...user,
             phone: "0" + user.phone
           };
@@ -171,8 +172,8 @@ export default {
       this.$refs.menu.save(date);
     },
     cancelEdit() {
-      this.user = {
-        ...this.user,
+      this.userData = {
+        ...this.userData,
         ...this.userCached,
       };
     },
@@ -180,8 +181,9 @@ export default {
   computed: {
     same() {
       let lists = ["username", "sex", "birthday", "phone", "email"];
-      return lists.every((list) => this.user[list] === this.userCached[list]);
+      return lists.every((list) => this.userData[list] === this.userCached[list]);
     },
+    ...mapState(['user'])
   },
 };
 </script>

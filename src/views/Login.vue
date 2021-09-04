@@ -52,13 +52,11 @@
 
 <script>
 import { Toast } from './../utils/helper'
+import Papa from 'papaparse'
 
-const dummyUser = {
-  id: 666,
-  name: 'Teddy',
-  account: 'teddy0323',
-  password: '12345678'
-}
+const UserURL =
+  "https://docs.google.com/spreadsheets/d/e/2PACX-1vT54r-aPFDVkBm3KfUCm3C1N6kwcAN7fVqFzsUc2IKShjEpO3TQjKPKY2zUbkeQkQD6OaQ56CyR0ECC/pub?gid=1020618966&single=true&output=csv";
+
 
 export default {
   name: "Login",
@@ -68,25 +66,55 @@ export default {
     password: "",
     passwordShow: false,
     notEmpty: [(v) => !!v || "請填寫欄位"],
+    userList: []
   }),
+  created() {
+    this.fetchDummyUser()
+  },
   methods: {
+    fetchDummyUser() {
+      Papa.parse(UserURL, {
+        download: true,
+        header: true,
+        complete: (results) => {
+          results.data.forEach(user => {
+            this.userList.push({
+              id: user.id,
+              account: user.account,
+              password: user.password,
+              name: user.username
+            })
+          })
+        }
+      })
+    },
     handleLogin() {
-      if(this.account !== dummyUser.account || this.password !== dummyUser.password) {
+      const findUser = this.userList.some(user => user.account === this.account)
+      if(!findUser) {
         Toast.fire({
           icon: 'error',
-          title: '帳號或密碼錯誤。'
+          title: '帳號不存在'
         })
         return
       }
+      const targetuser = this.userList.find(user => user.account === this.account)
+      if(findUser && targetuser.password !== this.password) {
+        Toast.fire({
+          icon: 'error',
+          title: '密碼錯誤，請再確認一次！'
+        })
+        return
+      }
+
       Toast.fire({
         icon: 'success',
         title: '登入成功'
       })
 
       const userData = {
-        id: dummyUser.id,
-        name: dummyUser.name,
-        account: dummyUser.account
+        id: targetuser.id,
+        name: targetuser.username,
+        account: targetuser.account
       }
 
       localStorage.setItem('currentUser', JSON.stringify(userData))

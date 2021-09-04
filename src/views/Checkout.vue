@@ -18,6 +18,14 @@
     </v-sheet>
 
     <v-sheet max-width="1200" class="mx-auto my-6">
+      <div v-if="status.isLoading" class="loading-box">
+      <half-circle-spinner
+        :animation-duration="1200"
+        :size="80"
+        color="#1A237E"
+      />
+    </div>
+    <template v-else>
       <v-stepper v-model="nowStep">
         <v-stepper-header>
           <v-stepper-step :complete="nowStep > 1" step="1">
@@ -414,6 +422,7 @@
           </v-stepper-content>
         </v-stepper-items>
       </v-stepper>
+    </template>
     </v-sheet>
   </v-container>
 </template>
@@ -424,82 +433,24 @@ import CouponTicket from "./../components/CouponTicket.vue";
 // TODO: use mapState to GET cart items
 import { moneyFilter } from "./../utils/mixins";
 import { mapState } from "vuex";
+
 import Swal from "sweetalert2";
 import { Toast } from '../utils/helper';
 import {v4 as uuidv4} from 'uuid'
+import Papa from 'papaparse'
 
-const dummyTickets = [
-  {
-    id: 1,
-    name: "滿1000折100",
-    type: "",
-    minimum: 1000,
-    limitDate: "無限期使用",
-    code: "467AABAA",
-    function: function (price) {
-      if (price >= 1000) {
-        return price - 100;
-      }
-      return;
-    },
-  },
-  {
-    id: 2,
-    name: "89折，低消須達到2000",
-    type: "",
-    minimum: 2000,
-    limitDate: "2021/09/09",
-    code: "89898989",
-    function: function (price) {
-      if (price >= 2000) {
-        return Math.floor(price * 0.89);
-      }
-      return;
-    },
-  },
-  {
-    id: 3,
-    name: "免運費，低消須達到1200",
-    type: "",
-    minimum: 1200,
-    code: "467AABAA",
-    limitDate: "2021/10/10",
-    function: function (price, fee) {
-      if (price >= 1200) {
-        return price - fee;
-      }
-      return;
-    },
-  },
-  {
-    id: 4,
-    name: "無條件100元折價",
-    type: "新會員福利",
-    minimum: 0,
-    code: "467AABAA",
-    limitDate: "無限期使用",
-    function: function (price) {
-      return price - 100;
-    },
-  },
-  {
-    id: 5,
-    name: "滿1000元享200元折價",
-    type: "新會員福利",
-    minimum: 1000,
-    code: "467AABAA",
-    limitDate: "無限期使用",
-    function: function (price) {
-      return price - 200;
-    },
-  },
-];
+import { HalfCircleSpinner } from "epic-spinners";
+
+const CouponURL =
+  "https://docs.google.com/spreadsheets/d/e/2PACX-1vT54r-aPFDVkBm3KfUCm3C1N6kwcAN7fVqFzsUc2IKShjEpO3TQjKPKY2zUbkeQkQD6OaQ56CyR0ECC/pub?gid=1432926202&single=true&output=csv";
+
 
 export default {
   name: "Checkout",
   mixins: [moneyFilter],
   components: {
     CouponTicket,
+    HalfCircleSpinner
   },
   data: () => ({
     nowStep: 1,
@@ -532,6 +483,10 @@ export default {
 
     couponTicket: [],
     selectTicket: "pass",
+
+    status: {
+      isLoading: true
+    }
   }),
   created() {
     this.fetchTickets();
@@ -548,8 +503,41 @@ export default {
     }
   },
   methods: {
-    fetchTickets() {
-      this.couponTicket = dummyTickets;
+   fetchTickets() {
+      // this.tickets = dummyTickets
+      Papa.parse(CouponURL, {
+        download: true,
+        header: true,
+        dynamicTyping: true,
+        complete: (results) => {
+          results.data.forEach((item) => {
+            let discount = null;
+            if (item.discountType === "divide") {
+              discount = function (price) {
+                return price * item.discount;
+              };
+            } else if (item.discountType === "minus") {
+              discount = function (price) {
+                return price - item.discount;
+              };
+            } else {
+              discount = function (price, fee) {
+                return price - fee;
+              };
+            }
+            this.couponTicket.push({
+              id: item.id,
+              name: item.name,
+              type: item.type === "無" ? "" : item.type,
+              minimum: item.minimum,
+              code: item.code,
+              limitDate: item.limitDate,
+              function: discount,
+            });
+          });
+          this.status.isLoading = false
+        },
+      });
     },
     nextStep() {
       if (
@@ -729,5 +717,12 @@ export default {
   justify-items: center;
   grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
   grid-gap: 10px 30px;
+}
+
+.loading-box {
+  height: 500px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 </style>

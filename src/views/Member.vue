@@ -50,7 +50,6 @@
 
 <script>
 
-
 export default {
   name: "Member",
   data: () => ({
@@ -85,7 +84,8 @@ export default {
   computed: {
     sectionName() {
       return this.tags.find(tag => tag.id === this.selectedTag + 1).name
-    }
+    },
+    
   }
 };
 </script>
