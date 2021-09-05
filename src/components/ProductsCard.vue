@@ -2,12 +2,14 @@
   <v-card class="mx-4 my-6 product-card" max-width="220">
     <v-img
       height="146"
-      :src="`https://picsum.photos/id/${10 + item.id}/500/300`"
+      :src="item.image || `https://picsum.photos/id/${10 + item.id}/500/300`"
       lazy-src="https://picsum.photos/id/11/100/60"
     ></v-img>
     <div class="card-section">
       <v-card-title class="text-title">{{ item.name }}</v-card-title>
-      <v-card-title class="text-subtitle"> NTD{{ item.price | moneyFilter }}</v-card-title>
+      <v-card-title class="text-subtitle">
+        NTD{{ item.price | moneyFilter }}</v-card-title
+      >
     </div>
 
     <v-card-text class="pt-1 pb-0 description-part">
@@ -20,7 +22,7 @@
           readonly
           size="14"
         ></v-rating>
-        <div class="grey--text ms-4">{{item.rating}}</div>
+        <div class="grey--text ms-4">{{ item.rating }}</div>
       </v-row>
     </v-card-text>
 
@@ -50,7 +52,7 @@
 import { Toast } from "./../utils/helper";
 import { mapState } from "vuex";
 import { v4 as uuidv4 } from "uuid";
-import { moneyFilter } from './../utils/mixins'
+import { moneyFilter } from "./../utils/mixins";
 
 export default {
   name: "ProductsCard",
@@ -91,26 +93,26 @@ export default {
       };
     },
     toggleLiked() {
-      if(this.user.id === -1) {
+      if (this.user.id === -1) {
         Toast.fire({
-          icon: 'error',
-          title: '無法加入收藏，請先登入'
-        })
-        return
+          icon: "error",
+          title: "無法加入收藏，請先登入",
+        });
+        return;
       }
-      if(this.likes.some(like => like.id === this.item.id)) {
-        this.$store.commit('removeLike', this.item)
+      if (this.likes.some((like) => like.id === this.item.id)) {
+        this.$store.commit("removeLike", this.item);
       } else {
-        this.$store.commit('setLike', this.item)
+        this.$store.commit("setLike", this.item);
       }
     },
     addToCart() {
-      if(this.user.id === -1) {
+      if (this.user.id === -1) {
         Toast.fire({
-          icon: 'error',
-          title: '無法新增至購物車，請先登入'
-        })
-        return
+          icon: "error",
+          title: "無法新增至購物車，請先登入",
+        });
+        return;
       }
       if (this.isInCart) {
         Toast.fire({
@@ -138,15 +140,15 @@ export default {
     },
   },
   computed: {
-    ...mapState(["user","itemInCart", 'likes']),
+    ...mapState(["user", "itemInCart", "likes"]),
     isInCart() {
       return this.itemInCart.find(
         (cartItem) => cartItem.Item.id === this.item.id
       );
     },
     isLiked() {
-      return this.likes.some(like => like.id === this.item.id)
-    }
+      return this.likes.some((like) => like.id === this.item.id);
+    },
   },
 };
 </script>

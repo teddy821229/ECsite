@@ -2,7 +2,16 @@
   <v-container class="pb-8">
     <v-sheet
       elevation="8"
-      class="text-h5 font-weight-bold text-center py-3 indigo white--text my-3 mx-auto"
+      class="
+        text-h5
+        font-weight-bold
+        text-center
+        py-3
+        indigo
+        white--text
+        my-3
+        mx-auto
+      "
       max-width="1200"
     >
       會員註冊
@@ -50,7 +59,7 @@
           </v-text-field>
 
           <div class="text-h6 mt-10">基本資料</div>
-           <v-divider class="mt-4 mb-6"></v-divider>
+          <v-divider class="mt-4 mb-6"></v-divider>
           <v-text-field
             v-model="name"
             label="姓名："
@@ -116,9 +125,7 @@
 
           <div class="actions d-flex mt-8">
             <v-spacer></v-spacer>
-            <v-btn color="indigo white--text" type="submit" :disabled="!valid"
-              >註冊</v-btn
-            >
+            <v-btn color="indigo white--text" type="submit" :disabled="!valid || hasEmpty">註冊</v-btn>
           </div>
         </v-form>
       </v-sheet>
@@ -150,16 +157,15 @@ export default {
     Rules: {
       notEmpty: (v) => !!v || "請填寫欄位",
       email: (v) => /.+@.+/.test(v) || "信箱格式不正確",
-      passwordLength: (v) => v.length >= 8 || '密碼需大於8碼'
+      passwordLength: (v) => v.length >= 8 || "密碼需大於8碼",
     },
     sexChoices: ["生理男", "生理女", "不透露"],
   }),
   methods: {
     handleSubmit() {
-      this.check = true;
-      if(!this.valid) {
-        console.log('資料錯誤，請重新檢查');
-        return
+      if (!this.valid) {
+        console.log("資料錯誤，請重新檢查");
+        return;
       }
       const user = {
         account: this.account,
@@ -169,8 +175,8 @@ export default {
         birthday: this.birthday,
         phone: this.phone,
         address: this.address,
-        email: this.email
-      }
+        email: this.email,
+      };
 
       console.log("user", user);
     },
@@ -180,18 +186,9 @@ export default {
   },
   computed: {
     passwordRules() {
-      if (!this.check) {
-        return [];
-      }
-      return [
-        this.Rules.notEmpty,
-        this.Rules.passwordLength,
-      ];
+      return [this.Rules.notEmpty, this.Rules.passwordLength];
     },
     passwordCheckRules() {
-      if (!this.check) {
-        return [];
-      }
       return [
         this.Rules.notEmpty,
         this.Rules.passwordLength,
@@ -199,16 +196,14 @@ export default {
       ];
     },
     emailRules() {
-      if (!this.check) {
-        return [];
-      }
       return [this.Rules.notEmpty, this.Rules.email];
     },
     emptyRules() {
-      if (!this.check) {
-        return [];
-      }
       return [this.Rules.notEmpty];
+    },
+    hasEmpty() {
+      let lists = ["username", 'account', 'password', "sex", "birthday", "phone", "email", 'address', ];
+      return lists.every((list) => this[list] !== '');
     },
   },
 };

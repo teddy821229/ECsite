@@ -3,7 +3,8 @@
     <v-slide-item>
       <v-card class="mx-4 my-2 product-card" max-width="296">
         <v-img
-          height="220"
+          height="200"
+          width="300"
           :src="
             item.image || `https://picsum.photos/id/${10 + item.id}/500/300`
           "
@@ -149,7 +150,7 @@ export default {
         Item: {
           id: this.item.id,
           name: this.item.name,
-          image: "",
+          image: this.item.image,
           price: this.item.price,
           stock: this.item.stock,
         },

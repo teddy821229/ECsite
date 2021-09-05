@@ -22,16 +22,16 @@ export default {
     model: 0,
     items: [
       {
-        src: "https://cdn.vuetifyjs.com/images/carousel/squirrel.jpg",
+        src: "https://i.imgur.com/npIOQof.jpg",
       },
       {
-        src: "https://cdn.vuetifyjs.com/images/carousel/sky.jpg",
+        src: "https://i.imgur.com/Xjl5xwu.jpg",
       },
       {
-        src: "https://cdn.vuetifyjs.com/images/carousel/bird.jpg",
+        src: "https://i.imgur.com/8Z3sNo4.jpg",
       },
       {
-        src: "https://cdn.vuetifyjs.com/images/carousel/planet.jpg",
+        src: "https://i.imgur.com/8eXPyxG.jpg",
       },
     ],
   }),
@@ -41,5 +41,6 @@ export default {
 <style scoped>
 .carousel {
   width: 80%;
+  object-fit: cover;
 }
 </style>
