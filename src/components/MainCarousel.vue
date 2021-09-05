@@ -40,7 +40,7 @@ export default {
 
 <style scoped>
 .carousel {
-  width: 80%;
+  max-width: 1100px;
   object-fit: cover;
 }
 </style>
