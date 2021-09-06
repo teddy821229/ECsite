@@ -13,7 +13,9 @@
           <v-col cols="5">
             <v-img
               aspect-ratio="1.7778"
-              src="https://picsum.photos/id/11/500/300"
+              :src="
+                Item.image || `https://picsum.photos/id/${10 + item.id}/500/300`
+              "
               class="mx-auto my-4 rounded-lg"
             ></v-img>
           </v-col>
@@ -37,7 +39,8 @@
               ></v-rating>
             </div>
             <div class="amount text-h6 mt-10">
-              售價: <span class="ml-5">{{ Item.price | moneyFilter }} / 個</span>
+              售價:
+              <span class="ml-5">{{ Item.price | moneyFilter }} / 個</span>
             </div>
 
             <div class="quantity-container d-flex align-center mt-2">
@@ -71,7 +74,7 @@
             <v-divider class="mt-5"></v-divider>
 
             <div class="total text-h6 mt-5">
-              總金額： <span>{{ quantity * Item.price | moneyFilter }}</span>
+              總金額： <span>{{ (quantity * Item.price) | moneyFilter }}</span>
             </div>
 
             <div class="button-container mt-10">
@@ -118,7 +121,7 @@ import { mapState } from "vuex";
 import { Toast } from "./../utils/helper";
 import { v4 as uuidv4 } from "uuid";
 import Papa from "papaparse";
-import { moneyFilter } from './../utils/mixins'
+import { moneyFilter } from "./../utils/mixins";
 
 import { HalfCircleSpinner } from "epic-spinners";
 
@@ -242,7 +245,7 @@ export default {
         Item: {
           id: this.Item.id,
           name: this.Item.name,
-          image: "",
+          image: this.Item.image,
           price: this.Item.price,
           stock: this.Item.stock,
         },
