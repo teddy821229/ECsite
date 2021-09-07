@@ -92,7 +92,7 @@
 
               <v-btn
                 class="px-10 py-6 mr-5"
-                color="amber"
+                color="indigo"
                 outlined
                 :disabled="Item.stock === 0"
                 @click="addToCart"
@@ -101,13 +101,6 @@
                 加入購物車</v-btn
               >
 
-              <v-btn
-                class="px-10 py-6 mr-5"
-                color="indigo white--text"
-                :disabled="Item.stock === 0"
-              >
-                直接購買</v-btn
-              >
             </div>
           </v-col>
         </v-row>

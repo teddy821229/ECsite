@@ -85,6 +85,7 @@ import MainCarousel from "./../components/MainCarousel";
 import NewestItems from "./../components/NewestItems.vue";
 import { mapState } from "vuex";
 import Papa from "papaparse";
+import swal from "sweetalert2";
 
 import { HalfCircleSpinner } from "epic-spinners";
 
@@ -104,6 +105,7 @@ export default {
   created() {
     this.fetchProducts();
     this.fetchSeries();
+    this.couponTicketAlert()
   },
   data: () => ({
     newestItems: [],
@@ -174,6 +176,27 @@ export default {
           this.status.isLoading = false;
         },
       });
+    },
+    async couponTicketAlert() {
+      const stop = localStorage.getItem('stopAlert')
+      if(stop || this.user.id === -1) {
+        return
+      }
+      const { isConfirmed, isDenied } = await swal.fire({
+        title: "<h2>夏日優惠卷</h2>",
+        html: '<div style="line-height:50px;">歡迎來到2/144盲盒店</div><b style="line-height:50px;">輸入優惠碼"1500NFEE"</b> <div style="line-height:50px;">可獲得滿1500免運費優惠卷一張</div>',
+        confirmButtonText: "前往輸入",
+        showDenyButton: true,
+        denyButtonText: "我知道了，不再顯示",
+        showCancelButton: true,
+        cancelButtonText: "關閉",
+      });
+      
+      if(isConfirmed) {
+        this.$router.push('/member/coupon')
+      } else if(isDenied) {
+        localStorage.setItem('stopAlert', true)
+      }
     },
     toPage() {
       document.documentElement.scrollTop = 0;

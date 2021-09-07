@@ -4,6 +4,7 @@
     class="carousel elevation-12"
     cycle
     interval="5000"
+    height="600"
   >
     <v-carousel-item
       v-for="(item, i) in items"
@@ -11,7 +12,8 @@
       :src="item.src"
       reverse-transition="fade-transition"
       transition="fade-transition"
-    ></v-carousel-item>
+    >
+    </v-carousel-item>
   </v-carousel>
 </template>
 
@@ -22,25 +24,27 @@ export default {
     model: 0,
     items: [
       {
-        src: "https://i.imgur.com/npIOQof.jpg",
+        src: 'https://i.imgur.com/S3sxvPn.jpg',
       },
       {
-        src: "https://i.imgur.com/Xjl5xwu.jpg",
+        src: "https://i.imgur.com/ThcMCQb.jpg",
       },
       {
-        src: "https://i.imgur.com/8Z3sNo4.jpg",
+        src: "https://i.imgur.com/WsKKK4k.jpg",
       },
       {
-        src: "https://i.imgur.com/8eXPyxG.jpg",
+        src: "https://i.imgur.com/WsWQKED.jpg",
       },
     ],
   }),
 };
 </script>
 
-<style scoped>
+<style >
 .carousel {
-  max-width: 1100px;
-  object-fit: cover;
+  max-width: 1000px;
 }
+
+
+
 </style>
